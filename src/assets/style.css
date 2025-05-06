@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* Plugins */
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+@import 'primeicons/primeicons.css';
+
+/* Class based dark mode */
+@custom-variant dark (&:where(.dark, .dark *)); 
