@@ -30,7 +30,8 @@
 <script>
   import nerdiCover from "@/assets/nerdi/nerdi.png"; 
   import talosCover from "@/assets/talos/ProjectionHistory.png"; 
-  import promeeCover from "@/assets/promee/promee.png"; 
+  import promeeCover from "@/assets/promee/promee.png";
+  import mitolohiyaCover from "@/assets/mitolohiya/mitolohiya.png"; 
   import ViewProject from "./ViewProject.vue";
   import {ref, onMounted} from "vue";
   export default {
@@ -74,7 +75,7 @@
           title: "Mitolohiya",
           tags:["Mobile Game", "2D", "Top-down"],
           description: "A mobile game based on Philippine Mythology.",
-          image: "path/to/image3.jpg",
+          image: mitolohiyaCover,
           technologies: ["Unity", "C#"],
           liveLink: "#",
           github: "#",
