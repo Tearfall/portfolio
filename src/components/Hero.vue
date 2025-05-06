@@ -12,7 +12,7 @@
         <a href="#contact" class="py-3 px-6 bg-gray-700 hover:bg-gray-600 rounded-lg text-white font-medium border border-gray-600 hover:border-gray-500 transition-all duration-300 transform hover:scale-105" @click.prevent="$emit('scroll-to', 'contact')">Get in touch</a>
       </div>
       <div class="pt-16">
-        <p class="text-gray-400 mb-4">Tech I work with</p>
+        <p class="text-gray-400 mb-4">Tech I currently work with</p>
         <div class="flex justify-center gap-6 flex-wrap text-3xl">
           <div class="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg border border-gray-700 hover:border-blue-500 hover:text-white transition-all duration-300">
             <i class="devicon-laravel-original colored"></i>
@@ -23,10 +23,20 @@
             <i class="devicon-php-plain colored"></i>
           </div>
           <div class="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg border border-gray-700 hover:border-blue-500 hover:text-white transition-all duration-300">
-            <i class="devicon-tailwindcss-original colored"></i>
+            <i class="devicon-mysql-plain colored"></i>
           </div>
           <div class="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg border border-gray-700 hover:border-blue-500 hover:text-white transition-all duration-300">
-            <i class="devicon-bootstrap-plain colored"></i></div>
+            <i class="devicon-html5-plain colored"></i>
+          </div>
+          <div class="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg border border-gray-700 hover:border-blue-500 hover:text-white transition-all duration-300">
+            <i class="devicon-css3-plain colored"></i>
+          </div>
+          <div class="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg border border-gray-700 hover:border-blue-500 hover:text-white transition-all duration-300">
+            <i class="devicon-javascript-plain colored"></i>
+          </div>
+          <div class="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg border border-gray-700 hover:border-blue-500 hover:text-white transition-all duration-300">
+            <i class="devicon-bootstrap-plain colored"></i>
+          </div>
         </div>
       </div>
     </div>

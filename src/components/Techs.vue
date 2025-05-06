@@ -4,7 +4,7 @@
     <div class="grid md:grid-cols-2 gap-12 items-center">
       <!-- About Content -->
       <div class="space-y-8 col-span-2">
-        <p class="text-gray-400 mb-4">Tech I work with</p>
+        <p class="text-gray-400 mb-4">Tech I have worked with</p>
 
         <!-- Frontend Section -->
         <div>
