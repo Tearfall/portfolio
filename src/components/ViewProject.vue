@@ -40,7 +40,7 @@
               <li 
                 v-for="(tech, index) in project.technologies" 
                 :key="index"
-                class="bg-gray-700 text-gray-100 px-3 py-1 rounded-full text-sm"
+                class="bg-gray-700 text-gray-100 px-3 py-1 rounded-full text-sm font-medium"
               >
                 {{ tech }}
               </li>
@@ -49,9 +49,10 @@
           
           <div class="flex flex-wrap gap-4 pt-4">
             <a 
+              v-if="project.link"
               :href="project.link" 
               target="_blank" 
-              class="inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-white font-medium rounded-md transition-all hover:bg-blue-700 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full"
+              class="inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-gray-100 font-medium rounded-md transition-all hover:bg-blue-700 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full"
             >
               View Live Project
             </a>
@@ -59,7 +60,7 @@
               v-if="project.github" 
               :href="project.github" 
               target="_blank" 
-              class="inline-flex items-center justify-center px-5 py-3 bg-gray-700 text-gray-100 font-medium rounded-md transition-all hover:bg-gray-600 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 w-full"
+              class="inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-gray-100 font-medium rounded-md transition-all hover:bg-blue-700 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 w-full"
             >
               View Source Code
             </a>
@@ -67,7 +68,7 @@
               v-if="project.design" 
               :href="project.design" 
               target="_blank" 
-              class="inline-flex items-center justify-center px-5 py-3 bg-gray-700  text-gray-100 font-medium rounded-md transition-all hover:bg-gray-600 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 w-full"
+              class="inline-flex items-center justify-center px-5 py-3 bg-blue-600  text-gray-100 font-medium rounded-md transition-all hover:bg-blue-700 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 w-full"
             >
               View Design
             </a>
