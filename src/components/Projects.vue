@@ -30,7 +30,8 @@
 <script>
   import nerdiCover from "@/assets/nerdi/nerdi.png"; 
   import talosCover from "@/assets/talos/ProjectionHistory.png"; 
-  import promeeCover from "@/assets/promee/promee.png"; 
+  import promeeCover from "@/assets/promee/promee.png";
+  import mitolohiyaCover from "@/assets/mitolohiya/mitolohiya.png"; 
   import ViewProject from "./ViewProject.vue";
   import {ref, onMounted} from "vue";
   export default {
@@ -48,7 +49,7 @@
           technologies: ["Vue", "Javascript", "Tailwind", "Firebase"],
           liveLink: "#",
           github: "#",
-          design:"#"
+          design:"https://www.figma.com/design/L2IDrSvZnucxpGm6iszkm1/Talos?node-id=0-1&t=yNukCu08nlS0LALk-1"
         },
         {
           title: "Nerdi",
@@ -57,8 +58,8 @@
           image: nerdiCover,
           technologies: ["Android Studio", "Firebase", "Java"],
           liveLink: "#",
-          github: "#",
-          design:"#"
+          github: "https://github.com/Tearfall/Nerdi",
+          design:"https://www.figma.com/design/GhZbsVBeqmTZkpzjiXdTR8/Nerdi?node-id=0-1&t=ccwOylWyXWSbdP5o-1"
         },
         {
           title: "Promee",
@@ -68,17 +69,17 @@
           technologies: ["Android Studio", "Firebase", "Java"],
           liveLink: "#",
           github: "#",
-          design:"#"
+          design:"https://www.figma.com/design/hJ0cbAc0AJqTEj1q8atvJS/Promee--Shared-?node-id=0-1&t=eu12JQittV94VUbP-1"
         },
         {
           title: "Mitolohiya",
           tags:["Mobile Game", "2D", "Top-down"],
           description: "A mobile game based on Philippine Mythology.",
-          image: "path/to/image3.jpg",
+          image: mitolohiyaCover,
           technologies: ["Unity", "C#"],
           liveLink: "#",
-          github: "#",
-          design:"#"
+          github: "https://github.com/TearUp16/mito_dev",
+          design: "#",
         },
       ];
       const selectedProject = ref(projects[0]); 
