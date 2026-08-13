@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../lib/supabase'
+import { uploadImage } from '../lib/upload'
 
 const props = defineProps({
   table: { type: String, required: true },
@@ -10,6 +11,7 @@ const props = defineProps({
 const rows = ref([])
 const loading = ref(true)
 const saving = ref(false)
+const uploadingKey = ref(null)
 
 async function load() {
   loading.value = true
@@ -52,6 +54,20 @@ async function deleteRow(row, idx) {
   rows.value.splice(idx, 1)
 }
 
+async function onFileChange(row, key, event) {
+  const file = event.target.files[0]
+  if (!file) return
+  uploadingKey.value = `${row.id || 'new'}-${key}`
+  try {
+    row[key] = await uploadImage(file, props.table)
+  } catch (e) {
+    alert(e.message)
+  } finally {
+    uploadingKey.value = null
+    event.target.value = ''
+  }
+}
+
 onMounted(load)
 </script>
 
@@ -64,6 +80,14 @@ onMounted(load)
           <textarea v-if="f.type === 'textarea'" v-model="row[f.key]" rows="3" />
           <input v-else-if="f.type === 'boolean'" type="checkbox" v-model="row[f.key]" />
           <input v-else-if="f.type === 'number'" type="number" v-model.number="row[f.key]" />
+          <div v-else-if="f.type === 'image'" class="image-field">
+            <img v-if="row[f.key]" :src="row[f.key]" class="preview" alt="" />
+            <input type="text" v-model="row[f.key]" placeholder="Image URL, or upload →" />
+            <label class="upload-btn">
+              {{ uploadingKey === `${row.id || 'new'}-${f.key}` ? '…' : 'Upload' }}
+              <input type="file" accept="image/*" hidden @change="onFileChange(row, f.key, $event)" />
+            </label>
+          </div>
           <input v-else type="text" v-model="row[f.key]" />
         </label>
       </div>
@@ -74,18 +98,32 @@ onMounted(load)
     </div>
     <button class="add" @click="addRow">+ Add new</button>
   </div>
-  <p v-else>Loading…</p>
+  <p v-else class="loading-text">Loading…</p>
 </template>
 
 <style scoped>
-.row-card { border: 1px solid #e5e5e5; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: #fff; }
-.fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
-label { display: flex; flex-direction: column; font-size: 0.8rem; color: #555; gap: 0.25rem; }
-input, textarea { padding: 0.45rem 0.6rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; font-family: inherit; }
+.loading-text { color: var(--muted); font-size: 0.9rem; }
+.row-card { border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem; margin-bottom: 1rem; background: var(--panel); }
+.fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
+label { display: flex; flex-direction: column; font-size: 0.78rem; color: var(--muted); gap: 0.3rem; }
+input, textarea {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+input:focus, textarea:focus { outline: none; border-color: var(--accent); }
 input[type=checkbox] { width: 18px; height: 18px; align-self: flex-start; }
-.row-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
-button { padding: 0.4rem 0.9rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
-.save { background: #2563eb; color: #fff; }
-.delete { background: #fee2e2; color: #b91c1c; }
-.add { background: #f1f5f9; color: #333; width: 100%; padding: 0.6rem; }
+.image-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.image-field .preview { width: 100%; height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+.upload-btn { text-align: center; background: var(--ink); color: var(--bg); padding: 0.4rem; border-radius: 8px; cursor: pointer; font-size: 0.78rem; }
+.row-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+button { padding: 0.45rem 0.9rem; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; background: var(--panel); color: var(--ink); }
+.save { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.delete { color: #a4321f; }
+.delete:hover { background: #fbe9e4; border-color: #f0997b; }
+.add { background: transparent; border: 1px dashed var(--line); color: var(--muted); width: 100%; padding: 0.6rem; }
 </style>

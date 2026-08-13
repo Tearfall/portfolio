@@ -99,3 +99,20 @@ create policy "auth write projects" on projects for all using (auth.role() = 'au
 create policy "auth write experience" on experience for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 create policy "auth write education" on education for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 create policy "auth write skills" on skills for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- 5. Storage bucket for uploaded images (avatar, project screenshots)
+insert into storage.buckets (id, name, public)
+values ('portfolio-media', 'portfolio-media', true)
+on conflict (id) do nothing;
+
+create policy "public read portfolio-media" on storage.objects
+  for select using (bucket_id = 'portfolio-media');
+
+create policy "auth write portfolio-media" on storage.objects
+  for insert with check (bucket_id = 'portfolio-media' and auth.role() = 'authenticated');
+
+create policy "auth update portfolio-media" on storage.objects
+  for update using (bucket_id = 'portfolio-media' and auth.role() = 'authenticated');
+
+create policy "auth delete portfolio-media" on storage.objects
+  for delete using (bucket_id = 'portfolio-media' and auth.role() = 'authenticated');
