@@ -32,6 +32,12 @@ create table profile (
   linkedin_url text default '',
   twitter_url text default '',
   website_url text default '',
+  theme text not null default 'e',
+  color_bg text not null default '#fafaf8',
+  color_surface text not null default '#ffffff',
+  color_ink text not null default '#1c1c1a',
+  color_accent text not null default '#f29e4c',
+  color_accent2 text not null default '#048ba8',
   updated_at timestamptz not null default now()
 );
 

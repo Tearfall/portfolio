@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../../lib/supabase'
 import { uploadImage } from '../../lib/upload'
 import CollectionEditor from '../../components/CollectionEditor.vue'
+import { THEMES, themeById } from '../../lib/themes'
 
 const router = useRouter()
 const tab = ref('profile')
@@ -49,11 +50,26 @@ async function logout() {
 
 const tabs = [
   { id: 'profile', label: 'Profile' },
+  { id: 'theme', label: 'Theme' },
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
   { id: 'education', label: 'Education' },
   { id: 'skills', label: 'Skills' },
 ]
+
+const currentThemeMeta = computed(() => themeById(profile.value?.theme))
+
+const colorFields = [
+  { key: 'color_bg', label: 'Background' },
+  { key: 'color_surface', label: 'Surface' },
+  { key: 'color_ink', label: 'Ink (text)' },
+  { key: 'color_accent', label: 'Accent' },
+  { key: 'color_accent2', label: 'Accent 2' },
+]
+
+function pickTheme(id) {
+  profile.value.theme = id
+}
 
 const projectFields = [
   { key: 'title', label: 'Title', type: 'text' },
@@ -136,6 +152,40 @@ const skillFields = [
         <span v-if="saved" class="saved">Saved</span>
       </section>
 
+      <section v-if="tab === 'theme' && profile" class="theme-tab">
+        <div class="theme-grid">
+          <button
+            v-for="t in THEMES"
+            :key="t.id"
+            class="theme-card"
+            :class="{ active: profile.theme === t.id }"
+            @click="pickTheme(t.id)"
+          >
+            <div class="swatch">
+              <span :style="{ background: profile.color_ink }"></span>
+              <span :style="{ background: profile.color_accent }"></span>
+              <span :style="{ background: profile.color_accent2 }"></span>
+            </div>
+            <strong>{{ t.label }}</strong>
+            <p>{{ t.description }}</p>
+          </button>
+        </div>
+
+        <h3>Color palette</h3>
+        <p class="guide">{{ currentThemeMeta.guide }}</p>
+        <div class="color-grid">
+          <label v-for="f in colorFields" :key="f.key">
+            <span>{{ f.label }}</span>
+            <div class="color-input">
+              <input type="color" v-model="profile[f.key]" />
+              <input type="text" v-model="profile[f.key]" />
+            </div>
+          </label>
+        </div>
+        <button class="save" :disabled="saving" @click="saveProfile">{{ saving ? 'Saving…' : 'Save theme' }}</button>
+        <span v-if="saved" class="saved">Saved</span>
+      </section>
+
       <CollectionEditor v-if="tab === 'projects'" table="projects" :fields="projectFields" />
       <CollectionEditor v-if="tab === 'experience'" table="experience" :fields="experienceFields" />
       <CollectionEditor v-if="tab === 'education'" table="education" :fields="educationFields" />
@@ -170,4 +220,20 @@ const skillFields = [
 .profile-form input:focus, .profile-form textarea:focus { outline: none; border-color: var(--accent); }
 .save { background: var(--ink); color: var(--bg); border: none; padding: 0.65rem 1.2rem; border-radius: 8px; font-weight: 700; cursor: pointer; width: fit-content; }
 .saved { color: #3b6d11; font-size: 0.85rem; margin-left: 0.5rem; }
+
+.theme-tab { max-width: 640px; }
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.85rem; margin-bottom: 2rem; }
+.theme-card { text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem; cursor: pointer; display: flex; flex-direction: column; gap: 0.4rem; }
+.theme-card.active { border-color: var(--accent); border-width: 2px; padding: calc(0.9rem - 1px); }
+.swatch { display: flex; gap: 0.3rem; }
+.swatch span { width: 18px; height: 18px; border-radius: 50%; display: inline-block; }
+.theme-card strong { font-size: 0.9rem; }
+.theme-card p { margin: 0; font-size: 0.76rem; color: var(--muted); line-height: 1.4; }
+.theme-tab h3 { font-size: 1rem; margin: 0 0 0.4rem; }
+.guide { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin: 0 0 1.25rem; max-width: 52ch; }
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.color-grid label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.78rem; color: var(--muted); }
+.color-input { display: flex; gap: 0.5rem; align-items: center; }
+.color-input input[type=color] { width: 36px; height: 36px; padding: 0; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.color-input input[type=text] { flex: 1; padding: 0.5rem 0.6rem; border: 1px solid var(--line); border-radius: 8px; font-size: 0.85rem; font-family: 'Space Mono', monospace; }
 </style>
