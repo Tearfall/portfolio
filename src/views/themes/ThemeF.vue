@@ -55,7 +55,7 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
     <section v-if="projects.length" class="section">
       <h2>Selected work</h2>
       <div class="grid-block projects-grid">
-        <a v-for="(p, i) in projects" :key="p.id" class="cell project" :class="tileClasses[i % tileClasses.length]" :href="p.project_url || p.repo_url || '#'" target="_blank">
+        <a v-for="(p, i) in projects" :key="p.id" class="cell project" :class="tileClasses[i % tileClasses.length]" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
           <div class="proj-img-wrap" v-if="p.image_url"><img :src="p.image_url" alt="" /></div>
           <div class="proj-body">
             <h3>{{ p.title }}</h3>

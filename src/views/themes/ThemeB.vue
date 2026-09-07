@@ -34,7 +34,7 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
     <div v-if="projects.length" class="section">
       <h2>Work</h2>
       <div class="worklist">
-        <a v-for="p in projects" :key="p.id" class="work-row" :href="p.project_url || p.repo_url || '#'" target="_blank">
+        <a v-for="p in projects" :key="p.id" class="work-row" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
           <span class="yr">{{ techList(p.tech_stack)[0] || '' }}</span>
           <div><div class="title">{{ p.title }}</div><div class="meta">{{ techList(p.tech_stack).join(' · ') }}</div></div>
           <span class="arrow">↗</span>

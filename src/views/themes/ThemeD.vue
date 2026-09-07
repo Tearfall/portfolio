@@ -39,7 +39,7 @@ const initials = computed(() => (props.profile?.name || '').split(' ').filter(Bo
     <section v-if="projects.length" class="section">
       <h2>Things I've made</h2>
       <div class="cards">
-        <a v-for="p in projects" :key="p.id" class="card" :href="p.project_url || p.repo_url || '#'" target="_blank">
+        <a v-for="p in projects" :key="p.id" class="card" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
           <img v-if="p.image_url" :src="p.image_url" class="card-img" alt="" />
           <h3>{{ p.title }}</h3>
           <p v-if="p.description">{{ p.description }}</p>

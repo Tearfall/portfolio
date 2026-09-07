@@ -17,3 +17,9 @@ body {
   color: var(--ink);
   background: var(--bg);
 }
+
+/* Descriptions in portfolio.js may contain line breaks (bullet lists) —
+   keep them instead of collapsing everything onto one line. */
+#app p {
+  white-space: pre-line;
+}

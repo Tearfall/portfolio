@@ -45,7 +45,7 @@ const navItems = computed(() => {
           <div v-for="p in projects" :key="p.id" class="c-proj">
             <span class="pname">{{ p.title }}</span>
             <span class="ptag" v-if="techList(p.tech_stack)[0]">{{ techList(p.tech_stack)[0] }}</span>
-            <a class="pyr" :href="p.project_url || p.repo_url || '#'" target="_blank">View ↗</a>
+            <a class="pyr" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">View ↗</a>
           </div>
         </div>
 

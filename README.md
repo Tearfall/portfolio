@@ -1,5 +1,52 @@
-# Vue 3 + Vite
+# Portfolio
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Personal portfolio of Mavi Joar Crisostomo. Vue 3 + Vite, fully static — no database,
+no API keys, no admin panel. Everything on the page comes from one file.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Editing the site
+
+All content lives in [`src/data/portfolio.js`](src/data/portfolio.js): profile, projects,
+experience, education, skills, colors, and the active theme. Edit that file, commit, done.
+
+## Switching themes
+
+Six layouts are available. Pick one by changing a single number at the top of
+`src/data/portfolio.js`:
+
+```js
+export const ACTIVE_THEME = 5
+```
+
+| # | Theme | Look |
+|---|-------|------|
+| 1 | Warm editorial | Cream page, serif headline, rounded cards |
+| 2 | Structural grid | Bold uppercase, monospace labels, ruled rows |
+| 3 | Dark split | Dark sidebar next to a deep panel |
+| 4 | Playful organic | Bright page, floating color blobs, pill tags |
+| 5 | Minimal centered | Quiet centered layout, single accent line |
+| 6 | Bauhaus blocks | Full-bleed grid of solid color tiles |
+
+Every theme reads the same data and the same `PALETTE` (also in `portfolio.js`), so
+switching is safe — nothing else needs to change. The comments next to `PALETTE`
+explain how each theme uses each color.
+
+## Images
+
+Project covers and the avatar are imported from `src/assets/` at the top of
+`portfolio.js`. Drop a new image in `src/assets/projects/`, import it, and point a
+project's `image_url` at it.
+
+## Development
+
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # production build into dist/
+npm run preview  # preview the production build
+```
+
+## Deployment
+
+Pushing to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
+which builds and publishes to GitHub Pages. The site is served under `/portfolio/`
+(`base` in `vite.config.js`); change that if the repo name changes.

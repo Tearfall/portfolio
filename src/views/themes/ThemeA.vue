@@ -30,7 +30,7 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
     <section v-if="projects.length" class="section">
       <h2>Projects</h2>
       <div class="cards">
-        <a v-for="p in projects" :key="p.id" class="card" :href="p.project_url || p.repo_url || '#'" target="_blank">
+        <a v-for="p in projects" :key="p.id" class="card" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
           <img v-if="p.image_url" :src="p.image_url" class="card-img" alt="" />
           <span class="tag" v-if="techList(p.tech_stack)[0]">{{ techList(p.tech_stack)[0] }}</span>
           <h3>{{ p.title }}</h3>
