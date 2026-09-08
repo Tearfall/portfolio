@@ -58,6 +58,16 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
       <div class="cell bio t5"><p>{{ profile.bio }}</p></div>
     </div>
 
+    <section v-if="skills.length" class="section">
+      <h2>Skills</h2>
+      <div v-for="(list, cat) in skillsByCategory" :key="cat" class="skill-group">
+        <h4>{{ cat }}</h4>
+        <div class="pills">
+          <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
+        </div>
+      </div>
+    </section>
+
     <section v-if="projects.length" class="section">
       <h2>Selected work</h2>
       <div class="grid-block projects-grid">
@@ -99,16 +109,6 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
           <span class="dates">{{ e.start_date }} – {{ e.end_date }}</span>
           <div class="stack-main"><strong>{{ e.degree }}</strong><span class="org">{{ e.school }}</span></div>
           <p>{{ e.description }}</p>
-        </div>
-      </div>
-    </section>
-
-    <section v-if="skills.length" class="section">
-      <h2>Skills</h2>
-      <div v-for="(list, cat) in skillsByCategory" :key="cat" class="skill-group">
-        <h4>{{ cat }}</h4>
-        <div class="pills">
-          <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
         </div>
       </div>
     </section>

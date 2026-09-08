@@ -19,9 +19,9 @@ const { galleryOpen, galleryImages, galleryTitle, openGallery, closeGallery } = 
 const { form, error, sending, sent, submit, again } = useContactForm(() => props.profile?.formspree_url)
 const navItems = computed(() => {
   const n = []
+  if (props.skills.length) n.push({ id: 'skills', label: 'Skills' })
   if (props.projects.length) n.push({ id: 'work', label: 'Work' })
   if (props.experience.length) n.push({ id: 'experience', label: 'Experience' })
-  if (props.skills.length) n.push({ id: 'skills', label: 'Skills' })
   if (props.education.length) n.push({ id: 'education', label: 'Education' })
   if (props.recognition?.length) n.push({ id: 'recognition', label: 'Recognition' })
   if (props.profile?.about?.length) n.push({ id: 'about', label: 'About' })
@@ -51,6 +51,16 @@ const navItems = computed(() => {
           <a v-if="profile?.resume_url" :href="profile.resume_url" target="_blank">Resume</a>
         </div>
 
+        <div id="skills" class="c-block" v-if="skills.length">
+          <h4>Skills</h4>
+          <div v-for="(list, cat) in skillsByCategory" :key="cat" class="c-skillgroup">
+            <span class="c-cat">{{ cat }}</span>
+            <div class="pills">
+              <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
+            </div>
+          </div>
+        </div>
+
         <div id="work" class="c-projects" v-if="projects.length">
           <div v-for="p in projects" :key="p.id" class="c-proj">
             <span class="pname">{{ p.title }}</span>
@@ -67,16 +77,6 @@ const navItems = computed(() => {
           <div v-for="e in experience" :key="e.id" class="c-row">
             <strong>{{ e.role }}</strong> — {{ e.company }}
             <span class="c-dates">{{ e.start_date }} – {{ e.end_date || 'Present' }}</span>
-          </div>
-        </div>
-
-        <div id="skills" class="c-block" v-if="skills.length">
-          <h4>Skills</h4>
-          <div v-for="(list, cat) in skillsByCategory" :key="cat" class="c-skillgroup">
-            <span class="c-cat">{{ cat }}</span>
-            <div class="pills">
-              <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
-            </div>
           </div>
         </div>
 

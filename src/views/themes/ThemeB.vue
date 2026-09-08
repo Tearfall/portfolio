@@ -37,6 +37,16 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
       <div class="stat" v-if="education.length"><b>{{ education.length }}</b><span>Degrees</span></div>
     </div>
 
+    <section v-if="skills.length" class="section">
+      <h2>Skills</h2>
+      <div v-for="(list, cat) in skillsByCategory" :key="cat" class="skill-group">
+        <h4>{{ cat }}</h4>
+        <div class="pills">
+          <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
+        </div>
+      </div>
+    </section>
+
     <div v-if="projects.length" class="section">
       <h2>Work</h2>
       <div class="worklist">
@@ -67,16 +77,6 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
         <div v-for="e in education" :key="e.id" class="work-row plain">
           <span class="yr">{{ e.start_date }}—{{ e.end_date }}</span>
           <div><div class="title">{{ e.degree }}</div><div class="meta">{{ e.school }}</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section v-if="skills.length" class="section">
-      <h2>Skills</h2>
-      <div v-for="(list, cat) in skillsByCategory" :key="cat" class="skill-group">
-        <h4>{{ cat }}</h4>
-        <div class="pills">
-          <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
         </div>
       </div>
     </section>
