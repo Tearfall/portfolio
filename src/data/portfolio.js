@@ -192,13 +192,13 @@ export const projects = [
 // Line breaks inside a description are preserved on the page.
 export const experience = [
   {
-    id: 'goodstrings',
+    id: 'goodstrings-dev',
     company: 'GoodStrings Inc.',
-    role: 'Junior Web Developer',
-    start_date: 'Jul 2025',
+    role: 'Junior Backend Developer',
+    start_date: 'Apr 2025',
     end_date: '',
     track:
-      'Progressed from OJT Intern (Jan–Mar 2025) → Backend Developer Apprentice (Apr–Jul 2025) → Junior Web Developer (Jul 2025–present), same team, six months.',
+      'Backend Developer Apprentice (Apr–Jul 2025) → Junior Backend Developer (Jul 2025–present), same team.',
     description: [
       '• Introduced a customizable and printable ID Template layout feature with data mapping in an ID system, improving the flexibility of overall setup of ID Templates.',
       "• Built and improved an email chat feature inside the company's client CRM, streamlining how client teams communicate.",
@@ -207,7 +207,17 @@ export const experience = [
       "• Shipped a bulk data import tool and export-to-PDF/Excel functionality, extending the platform's data-handling capabilities.",
       "• Implemented full CRUD operations for new system features using Laravel's Query Builder and Eloquent ORM.",
       '• Optimized database queries through Eloquent ORM to improve data retrieval and overall system performance.',
-      '• Identified, tracked, replicated, and fixed bugs within the school platform to improve stability and support smoother day-to-day operations.',
+    ].join('\n'),
+  },
+  {
+    id: 'goodstrings-intern',
+    company: 'GoodStrings Inc.',
+    role: 'Intern — Development Team',
+    start_date: 'Jan 2025',
+    end_date: 'Mar 2025',
+    track: 'On-the-job training that led into the apprentice and junior developer roles above.',
+    description: [
+      '• Identified, tracked, replicated, and fixed bugs within the school platform and CRM platform to improve stability and support smoother day-to-day operations.',
       '• Debugged and resolved critical issues within the existing CRM architecture alongside the development team.',
       '• Ran manual QA on the platform and fixed both front-end and back-end issues in assigned systems.',
     ].join('\n'),
