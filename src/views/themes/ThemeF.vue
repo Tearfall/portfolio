@@ -1,16 +1,22 @@
 <script setup>
 import { computed } from 'vue'
-import { techList, groupSkillsByCategory } from '../../lib/portfolioHelpers'
+import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../../lib/portfolioHelpers'
+import { useGallery } from '../../lib/useGallery'
+import { useContactForm } from '../../lib/useContactForm'
+import ProjectGallery from '../../components/ProjectGallery.vue'
 
 const props = defineProps({
   profile: Object,
   projects: Array,
   experience: Array,
   education: Array,
+  recognition: Array,
   skills: Array,
 })
 
 const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
+const { galleryOpen, galleryImages, galleryTitle, openGallery, closeGallery } = useGallery()
+const { form, error, sending, sent, submit, again } = useContactForm(() => props.profile?.formspree_url)
 const tileClasses = ['t1', 't2', 't3', 't4', 't5']
 </script>
 
@@ -55,16 +61,22 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
     <section v-if="projects.length" class="section">
       <h2>Selected work</h2>
       <div class="grid-block projects-grid">
-        <a v-for="(p, i) in projects" :key="p.id" class="cell project" :class="tileClasses[i % tileClasses.length]" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
-          <div class="proj-img-wrap" v-if="p.image_url"><img :src="p.image_url" alt="" /></div>
+        <article v-for="(p, i) in projects" :key="p.id" class="cell project" :class="tileClasses[i % tileClasses.length]">
+          <button v-if="p.image_url" type="button" class="proj-img-wrap" @click="openGallery(p)" :aria-label="`Open ${p.title} gallery`">
+            <img :src="p.image_url" alt="" />
+            <span class="img-hint">⤢ {{ galleryOf(p).length }}</span>
+          </button>
           <div class="proj-body">
+            <span class="kind" v-if="p.kind">{{ p.kind }}</span>
             <h3>{{ p.title }}</h3>
             <p v-if="p.description">{{ p.description }}</p>
+            <p class="note" v-if="p.note">{{ p.note }}</p>
             <div class="chip-row" v-if="techList(p.tech_stack).length">
               <span v-for="t in techList(p.tech_stack)" :key="t" class="chip">{{ t }}</span>
             </div>
+            <a v-if="projectLink(p)" class="proj-link" :href="projectLink(p)" target="_blank" rel="noopener">View project ↗</a>
           </div>
-        </a>
+        </article>
       </div>
     </section>
 
@@ -74,6 +86,7 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
         <div v-for="e in experience" :key="e.id" class="stack-row">
           <span class="dates">{{ e.start_date }} – {{ e.end_date || 'Present' }}</span>
           <div class="stack-main"><strong>{{ e.role }}</strong><span class="org">{{ e.company }}</span></div>
+          <p class="track" v-if="e.track">{{ e.track }}</p>
           <p>{{ e.description }}</p>
         </div>
       </div>
@@ -99,6 +112,64 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
         </div>
       </div>
     </section>
+
+    <section v-if="recognition?.length" class="section">
+      <h2>Recognition</h2>
+      <div class="stack-block">
+        <div v-for="r in recognition" :key="r.id" class="stack-row">
+          <span class="dates">{{ r.date }}</span>
+          <div class="stack-main"><strong>{{ r.title }}</strong><span class="org">{{ r.issuer }}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section v-if="profile?.about?.length" class="section">
+      <h2>About</h2>
+      <div class="grid-block bio-row">
+        <div class="cell about t5">
+          <p v-for="(para, i) in profile.about" :key="i">{{ para }}</p>
+        </div>
+      </div>
+    </section>
+    <section id="contact" class="section contact-f" v-if="profile?.email">
+      <h2>Contact</h2>
+      <div class="grid-block contact-f-row">
+        <div class="cell contact-hero t5">
+          <span class="label">Say hello</span>
+          <p class="contact-f-lead">Open to roles, freelance work, or just talking shop about a project.</p>
+        </div>
+        <div class="cell fact t1" v-if="profile?.email">
+          <span class="k">Email</span><a class="v link" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+        </div>
+        <div class="cell fact t2" v-if="profile?.phone">
+          <span class="k">Phone</span><a class="v link" :href="telHref(profile.phone)">{{ profile.phone }}</a>
+        </div>
+      </div>
+
+      <div class="grid-block contact-f-form-row" v-if="profile?.formspree_url">
+        <div class="cell contact-form-cell">
+          <form @submit.prevent="submit">
+            <template v-if="!sent">
+              <div class="f-row">
+                <div class="f-field"><label for="f-name">Name</label><input id="f-name" v-model="form.name" type="text" required autocomplete="name" /></div>
+                <div class="f-field"><label for="f-email">Email</label><input id="f-email" v-model="form.email" type="email" required autocomplete="email" /></div>
+              </div>
+              <div class="f-field"><label for="f-subject">Subject</label><input id="f-subject" v-model="form.subject" type="text" required /></div>
+              <div class="f-field"><label for="f-message">Message</label><textarea id="f-message" v-model="form.message" rows="4" required></textarea></div>
+            <input class="gotcha" :id="'f-gotcha'" type="text" v-model="form._gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <button class="f-send" type="submit" :disabled="sending">{{ sending ? 'SENDING…' : 'SEND MESSAGE' }}</button>
+              <p class="form-status error" v-if="error" role="status">{{ error }}</p>
+            </template>
+            <div class="form-done" v-else role="status">
+              <p>MESSAGE SENT — I'll get back to you soon.</p>
+              <button class="f-send" type="button" @click="again">SEND ANOTHER</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <ProjectGallery :open="galleryOpen" :images="galleryImages" :title="galleryTitle" @close="closeGallery" />
   </div>
 </template>
 
@@ -167,4 +238,32 @@ const tileClasses = ['t1', 't2', 't3', 't4', 't5']
   .stack-row { grid-template-columns: 1fr; }
   .stack-row p { grid-column: 1; }
 }
+.project .kind { font-family: 'Space Mono', monospace; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; }
+.project .note { font-size: 0.75rem; opacity: 0.85; line-height: 1.5; }
+.stack-row .track { margin: 0.2rem 0 0; font-size: 0.88rem; font-style: italic; }
+.about.t5 { min-height: 140px; gap: 1rem; }
+.about p { font-size: 1rem; line-height: 1.7; max-width: 72ch; margin: 0; }
+button.proj-img-wrap { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; position: relative; }
+.img-hint { position: absolute; right: 8px; bottom: 8px; font-family: 'Space Mono', monospace; font-size: 0.65rem; background: var(--ink); color: var(--bg); padding: 0.2rem 0.5rem; }
+button.proj-img-wrap:hover .img-hint { background: var(--accent); color: var(--ink); }
+.proj-link { margin-top: 0.6rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: inherit; text-decoration: underline; }
+.contact-f-row { grid-template-columns: 2fr 1fr 1fr; }
+.contact-hero { min-height: 150px; }
+.contact-f-lead { margin: 0; font-family: 'Fraunces', serif; font-size: 1.15rem; line-height: 1.5; max-width: 40ch; }
+.contact-f-form-row { grid-template-columns: 1fr; }
+.contact-form-cell { background: var(--surface, #fff); padding: 1.75rem; }
+.contact-form-cell form { display: flex; flex-direction: column; }
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.f-field { display: flex; flex-direction: column; margin-bottom: 1rem; }
+.f-field label { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.09em; color: color-mix(in srgb, var(--ink) 55%, transparent); margin-bottom: 0.35rem; }
+.f-field input, .f-field textarea { font-family: inherit; font-size: 0.95rem; color: var(--ink); background: var(--bg); border: 1px solid var(--ink); border-radius: 0; padding: 0.6rem 0.75rem; resize: vertical; }
+.f-field input:focus, .f-field textarea:focus { outline: 3px solid var(--accent); outline-offset: -3px; }
+.f-send { align-self: flex-start; font-family: 'Space Mono', monospace; font-size: 0.75rem; letter-spacing: 0.09em; background: var(--ink); color: var(--bg); border: 0; border-radius: 0; padding: 0.8rem 1.8rem; cursor: pointer; }
+.f-send:hover { background: var(--accent); color: var(--ink); }
+.f-send:disabled { opacity: 0.55; cursor: default; }
+.gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-status { font-family: 'Space Mono', monospace; font-size: 0.72rem; margin: 0.8rem 0 0; }
+.form-status.error { color: #b3261e; }
+.form-done p { font-family: 'Space Mono', monospace; font-size: 0.8rem; margin: 0 0 1rem; }
+@media (max-width: 760px) { .contact-f-row { grid-template-columns: 1fr; } .f-row { grid-template-columns: 1fr; } }
 </style>

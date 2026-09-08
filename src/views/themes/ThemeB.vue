@@ -1,16 +1,22 @@
 <script setup>
 import { computed } from 'vue'
-import { techList, groupSkillsByCategory } from '../../lib/portfolioHelpers'
+import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../../lib/portfolioHelpers'
+import { useGallery } from '../../lib/useGallery'
+import { useContactForm } from '../../lib/useContactForm'
+import ProjectGallery from '../../components/ProjectGallery.vue'
 
 const props = defineProps({
   profile: Object,
   projects: Array,
   experience: Array,
   education: Array,
+  recognition: Array,
   skills: Array,
 })
 
 const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
+const { galleryOpen, galleryImages, galleryTitle, openGallery, closeGallery } = useGallery()
+const { form, error, sending, sent, submit, again } = useContactForm(() => props.profile?.formspree_url)
 </script>
 
 <template>
@@ -34,11 +40,14 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
     <div v-if="projects.length" class="section">
       <h2>Work</h2>
       <div class="worklist">
-        <a v-for="p in projects" :key="p.id" class="work-row" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
-          <span class="yr">{{ techList(p.tech_stack)[0] || '' }}</span>
+        <div v-for="p in projects" :key="p.id" class="work-row">
+          <span class="yr">{{ p.kind || techList(p.tech_stack)[0] || '' }}</span>
           <div><div class="title">{{ p.title }}</div><div class="meta">{{ techList(p.tech_stack).join(' · ') }}</div></div>
-          <span class="arrow">↗</span>
-        </a>
+          <div class="row-actions">
+            <button v-if="galleryOf(p).length" type="button" class="row-btn" @click="openGallery(p)">⤢ {{ galleryOf(p).length }}</button>
+            <a v-if="projectLink(p)" class="row-btn" :href="projectLink(p)" target="_blank" rel="noopener">↗</a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -71,6 +80,59 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
         </div>
       </div>
     </section>
+
+    <section v-if="recognition?.length" class="section">
+      <h2>Recognition</h2>
+      <div class="worklist">
+        <div v-for="r in recognition" :key="r.id" class="work-row plain">
+          <span class="yr">{{ r.date }}</span>
+          <div><div class="title">{{ r.title }}</div><div class="meta">{{ r.issuer }}</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section v-if="profile?.about?.length" class="section">
+      <h2>About</h2>
+      <div class="about-copy">
+        <p v-for="(para, i) in profile.about" :key="i">{{ para }}</p>
+      </div>
+    </section>
+    <section id="contact" class="section contact-b" v-if="profile?.email">
+      <h2>Contact</h2>
+      <div class="contact-b-grid">
+        <dl class="contact-sheet">
+          <div class="sheet-row" v-if="profile?.email"><dt>Email</dt><dd><a :href="`mailto:${profile.email}`">{{ profile.email }}</a></dd></div>
+          <div class="sheet-row" v-if="profile?.phone"><dt>Phone</dt><dd><a :href="telHref(profile.phone)">{{ profile.phone }}</a></dd></div>
+          <div class="sheet-row" v-if="profile?.location"><dt>Location</dt><dd>{{ profile.location }}</dd></div>
+          <div class="sheet-row" v-if="profile?.timezone"><dt>Timezone</dt><dd>{{ profile.timezone }}</dd></div>
+          <div class="sheet-row" v-if="profile?.github_url || profile?.linkedin_url">
+            <dt>Links</dt>
+            <dd class="sheet-links">
+              <a v-if="profile?.github_url" :href="profile.github_url" target="_blank" rel="noopener">GitHub ↗</a>
+              <a v-if="profile?.linkedin_url" :href="profile.linkedin_url" target="_blank" rel="noopener">LinkedIn ↗</a>
+            </dd>
+          </div>
+        </dl>
+
+        <form class="contact-b-form" v-if="profile?.formspree_url" @submit.prevent="submit">
+          <template v-if="!sent">
+            <div class="field"><label for="b-name">Name</label><input id="b-name" v-model="form.name" type="text" required autocomplete="name" /></div>
+            <div class="field"><label for="b-email">Email</label><input id="b-email" v-model="form.email" type="email" required autocomplete="email" /></div>
+            <div class="field"><label for="b-subject">Subject</label><input id="b-subject" v-model="form.subject" type="text" required /></div>
+            <div class="field"><label for="b-message">Message</label><textarea id="b-message" v-model="form.message" rows="4" required></textarea></div>
+            <input class="gotcha" :id="'b-gotcha'" type="text" v-model="form._gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <button class="b-submit" type="submit" :disabled="sending">{{ sending ? 'SENDING…' : 'SEND →' }}</button>
+            <p class="form-status error" v-if="error" role="status">{{ error }}</p>
+          </template>
+          <div class="form-done" v-else role="status">
+            <p>MESSAGE SENT — I'll reply soon.</p>
+            <button class="b-submit" type="button" @click="again">SEND ANOTHER</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <ProjectGallery :open="galleryOpen" :images="galleryImages" :title="galleryTitle" @close="closeGallery" />
   </div>
 </template>
 
@@ -99,4 +161,29 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
 .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .pill { border: 1px solid var(--ink); padding: 0.35rem 0.85rem; font-size: 0.85rem; font-family: 'Space Mono', monospace; }
 @media (max-width: 640px) { .grid-b, .stats { grid-template-columns: 1fr; } }
+.about-copy p { margin: 0 0 1rem; line-height: 1.7; font-size: 0.96rem; color: color-mix(in srgb, var(--ink) 70%, transparent); max-width: 68ch; }
+.about-copy p:last-child { margin-bottom: 0; }
+.row-actions { display: flex; gap: 0.5rem; align-items: center; }
+.row-btn { font-family: 'Space Mono', monospace; font-size: 12px; border: 1px solid var(--ink); background: none; color: var(--ink); padding: 0.35rem 0.6rem; cursor: pointer; text-decoration: none; line-height: 1; }
+.row-btn:hover { background: var(--ink); color: var(--bg); }
+.contact-b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; border-top: 1.5px solid var(--ink); padding-top: 1.5rem; }
+.contact-sheet { margin: 0; }
+.sheet-row { display: grid; grid-template-columns: 110px 1fr; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); }
+.sheet-row dt { font-family: 'Space Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--ink) 55%, transparent); }
+.sheet-row dd { margin: 0; font-size: 0.92rem; word-break: break-word; }
+.sheet-row dd a { color: var(--accent); text-decoration: none; }
+.sheet-row dd a:hover { text-decoration: underline; }
+.sheet-links { display: flex; gap: 1rem; flex-wrap: wrap; font-family: 'Space Mono', monospace; font-size: 12px; }
+.contact-b-form .field { display: flex; flex-direction: column; margin-bottom: 1.1rem; }
+.contact-b-form label { font-family: 'Space Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: color-mix(in srgb, var(--ink) 55%, transparent); margin-bottom: 0.35rem; }
+.contact-b-form input, .contact-b-form textarea { font-family: inherit; font-size: 0.95rem; color: var(--ink); background: none; border: 0; border-bottom: 1.5px solid var(--ink); padding: 0.4rem 0; resize: vertical; border-radius: 0; }
+.contact-b-form input:focus, .contact-b-form textarea:focus { outline: 0; border-bottom-color: var(--accent); }
+.b-submit { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.08em; border: 1.5px solid var(--ink); background: none; color: var(--ink); padding: 0.7rem 1.6rem; cursor: pointer; }
+.b-submit:hover { background: var(--ink); color: var(--bg); }
+.b-submit:disabled { opacity: 0.5; cursor: default; }
+.gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-status { font-family: 'Space Mono', monospace; font-size: 11px; margin: 0.7rem 0 0; }
+.form-status.error { color: #b3261e; }
+.form-done p { font-family: 'Space Mono', monospace; font-size: 12px; margin: 0 0 1rem; }
+@media (max-width: 640px) { .contact-b-grid { grid-template-columns: 1fr; gap: 2rem; } }
 </style>

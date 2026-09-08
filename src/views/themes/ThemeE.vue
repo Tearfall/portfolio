@@ -1,16 +1,22 @@
 <script setup>
 import { computed } from 'vue'
-import { techList, groupSkillsByCategory } from '../../lib/portfolioHelpers'
+import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../../lib/portfolioHelpers'
+import { useGallery } from '../../lib/useGallery'
+import { useContactForm } from '../../lib/useContactForm'
+import ProjectGallery from '../../components/ProjectGallery.vue'
 
 const props = defineProps({
   profile: Object,
   projects: Array,
   experience: Array,
   education: Array,
+  recognition: Array,
   skills: Array,
 })
 
 const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
+const { galleryOpen, galleryImages, galleryTitle, openGallery, closeGallery } = useGallery()
+const { form, error, sending, sent, submit, again } = useContactForm(() => props.profile?.formspree_url)
 </script>
 
 <template>
@@ -41,15 +47,25 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
       <h2>Selected projects</h2>
       <div class="divider small"></div>
       <div class="project-list">
-        <a v-for="p in projects" :key="p.id" class="project" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">
-          <div class="proj-thumb" v-if="p.image_url"><img :src="p.image_url" alt="" /></div>
+        <article v-for="p in projects" :key="p.id" class="project">
+          <button v-if="p.image_url" type="button" class="proj-thumb" @click="openGallery(p)" :aria-label="`Open ${p.title} gallery`">
+            <img :src="p.image_url" alt="" />
+            <span class="thumb-count" v-if="galleryOf(p).length > 1">{{ galleryOf(p).length }}</span>
+          </button>
           <div class="proj-thumb placeholder" v-else></div>
           <div class="proj-text">
-            <h3>{{ p.title }}</h3>
+            <h3>{{ p.title }}<span class="kind" v-if="p.kind">{{ p.kind }}</span></h3>
             <p v-if="p.description">{{ p.description }}</p>
+            <p class="note" v-if="p.note">{{ p.note }}</p>
             <p class="tech" v-if="p.tech_stack">{{ techList(p.tech_stack).join(' · ') }}</p>
+            <div class="proj-links">
+              <button v-if="galleryOf(p).length" type="button" class="linkish" @click="openGallery(p)">
+                {{ galleryOf(p).length > 1 ? galleryOf(p).length + ' screenshots' : 'View screenshot' }}
+              </button>
+              <a v-if="projectLink(p)" class="linkish" :href="projectLink(p)" target="_blank" rel="noopener">View project ↗</a>
+            </div>
           </div>
-        </a>
+        </article>
       </div>
     </section>
 
@@ -63,6 +79,7 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
           <div class="row-main">
             <strong>{{ e.role }}</strong>
             <span class="org">{{ e.company }}</span>
+            <p class="track" v-if="e.track">{{ e.track }}</p>
             <p v-if="e.description">{{ e.description }}</p>
           </div>
         </div>
@@ -96,6 +113,62 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
         </div>
       </div>
     </section>
+
+    <section v-if="recognition?.length" class="section">
+      <p class="section-kicker">Recognition</p>
+      <h2>Awards &amp; certificates</h2>
+      <div class="divider small"></div>
+      <div class="list-block">
+        <div v-for="r in recognition" :key="r.id" class="list-row">
+          <span class="dates">{{ r.date }}</span>
+          <div class="row-main">
+            <strong>{{ r.title }}</strong>
+            <span class="org">{{ r.issuer }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section v-if="profile?.about?.length" class="section">
+      <p class="section-kicker">About</p>
+      <h2>A bit more about me</h2>
+      <div class="divider small"></div>
+      <div class="about-copy">
+        <p v-for="(para, i) in profile.about" :key="i">{{ para }}</p>
+      </div>
+    </section>
+    <section id="contact" class="section contact-e" v-if="profile?.email">
+      <p class="section-kicker">Contact</p>
+      <h2>Let's talk</h2>
+      <div class="divider small"></div>
+      <p class="contact-e-lead">Open to roles, freelance work, or just talking shop. Email is the fastest way to reach me.</p>
+      <div class="contact-e-links">
+        <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+        <a v-if="profile?.phone" :href="telHref(profile.phone)">{{ profile.phone }}</a>
+      </div>
+
+      <form class="contact-e-form" v-if="profile?.formspree_url" @submit.prevent="submit">
+        <template v-if="!sent">
+          <label for="e-name">Name</label>
+          <input id="e-name" v-model="form.name" type="text" required autocomplete="name" />
+          <label for="e-email">Email</label>
+          <input id="e-email" v-model="form.email" type="email" required autocomplete="email" />
+          <label for="e-subject">Subject</label>
+          <input id="e-subject" v-model="form.subject" type="text" required />
+          <label for="e-message">Message</label>
+          <textarea id="e-message" v-model="form.message" rows="4" required></textarea>
+            <input class="gotcha" :id="'e-gotcha'" type="text" v-model="form._gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button class="e-send" type="submit" :disabled="sending">{{ sending ? 'Sending…' : 'Send message →' }}</button>
+          <p class="form-status error" v-if="error" role="status">{{ error }}</p>
+        </template>
+        <div class="form-done" v-else role="status">
+          <p>Message sent — I'll get back to you soon.</p>
+          <button class="e-send" type="button" @click="again">Send another</button>
+        </div>
+      </form>
+    </section>
+
+    <ProjectGallery :open="galleryOpen" :images="galleryImages" :title="galleryTitle" @close="closeGallery" />
   </div>
 </template>
 
@@ -141,4 +214,28 @@ const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
   .dates { width: auto; }
   .list-row { flex-direction: column; gap: 0.3rem; }
 }
+.proj-text h3 .kind { font-family: 'Space Mono', monospace; font-size: 0.66rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.07em; color: color-mix(in srgb, var(--ink) 45%, transparent); margin-left: 0.55rem; }
+.proj-text .note { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: color-mix(in srgb, var(--ink) 50%, transparent); margin-top: 0.35rem; line-height: 1.5; }
+.row-main .track { font-size: 0.85rem; font-style: italic; color: color-mix(in srgb, var(--ink) 50%, transparent); }
+.about-copy p { margin: 0 0 1rem; line-height: 1.7; font-size: 0.95rem; color: color-mix(in srgb, var(--ink) 65%, transparent); }
+.about-copy p:last-child { margin-bottom: 0; }
+button.proj-thumb { padding: 0; cursor: pointer; position: relative; }
+.proj-thumb .thumb-count { position: absolute; right: 4px; bottom: 4px; font-family: 'Space Mono', monospace; font-size: 0.6rem; background: color-mix(in srgb, var(--ink) 80%, transparent); color: var(--bg); border-radius: 999px; padding: 0.12rem 0.4rem; }
+.proj-links { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.linkish { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: none; border-bottom: 1px solid transparent; }
+.linkish:hover { border-color: var(--accent); }
+.contact-e-lead { margin: 0 0 1.25rem; font-size: 0.95rem; line-height: 1.7; color: color-mix(in srgb, var(--ink) 65%, transparent); }
+.contact-e-links { display: flex; gap: 1.25rem; flex-wrap: wrap; font-family: 'Space Mono', monospace; font-size: 0.8rem; margin-bottom: 2rem; }
+.contact-e-links a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--accent); }
+.contact-e-form { display: flex; flex-direction: column; }
+.contact-e-form label { font-family: 'Space Mono', monospace; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: color-mix(in srgb, var(--ink) 50%, transparent); margin-bottom: 0.3rem; }
+.contact-e-form input, .contact-e-form textarea { font-family: inherit; font-size: 0.95rem; color: var(--ink); background: none; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); padding: 0.45rem 0; margin-bottom: 1.4rem; resize: vertical; border-radius: 0; }
+.contact-e-form input:focus, .contact-e-form textarea:focus { outline: 0; border-bottom-color: var(--accent); }
+.e-send { align-self: flex-start; background: none; border: 0; padding: 0; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 0.82rem; color: var(--accent); border-bottom: 1px solid transparent; }
+.e-send:hover { border-bottom-color: var(--accent); }
+.e-send:disabled { opacity: 0.5; cursor: default; }
+.gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-status { font-family: 'Space Mono', monospace; font-size: 0.72rem; margin: 0.8rem 0 0; }
+.form-status.error { color: #b3261e; }
+.form-done p { margin: 0 0 1rem; font-size: 0.95rem; }
 </style>

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { ACTIVE_THEME, PALETTE, profile, projects, experience, education, skills } from '../data/portfolio'
+import { ACTIVE_THEME, PALETTE, profile, projects, experience, education, recognition, skills } from '../data/portfolio'
 import ThemeA from './themes/ThemeA.vue'
 import ThemeB from './themes/ThemeB.vue'
 import ThemeC from './themes/ThemeC.vue'
@@ -30,10 +30,12 @@ const themeVars = {
       :projects="projects"
       :experience="experience"
       :education="education"
+      :recognition="recognition"
       :skills="skills"
     />
     <footer class="site-footer">
-      <span>© {{ new Date().getFullYear() }} {{ profile.name }}</span>
+      <span>© {{ new Date().getFullYear() }} {{ profile.full_name || profile.name }}</span>
+      <span v-if="profile.location">{{ profile.location }}</span>
     </footer>
   </div>
 </template>

@@ -1,21 +1,31 @@
 <script setup>
 import { computed } from 'vue'
-import { techList, groupSkillsByCategory } from '../../lib/portfolioHelpers'
+import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../../lib/portfolioHelpers'
+import { useGallery } from '../../lib/useGallery'
+import { useContactForm } from '../../lib/useContactForm'
+import ProjectGallery from '../../components/ProjectGallery.vue'
 
 const props = defineProps({
   profile: Object,
   projects: Array,
   experience: Array,
   education: Array,
+  recognition: Array,
   skills: Array,
 })
 
 const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
+const { galleryOpen, galleryImages, galleryTitle, openGallery, closeGallery } = useGallery()
+const { form, error, sending, sent, submit, again } = useContactForm(() => props.profile?.formspree_url)
 const navItems = computed(() => {
   const n = []
   if (props.projects.length) n.push({ id: 'work', label: 'Work' })
   if (props.experience.length) n.push({ id: 'experience', label: 'Experience' })
   if (props.skills.length) n.push({ id: 'skills', label: 'Skills' })
+  if (props.education.length) n.push({ id: 'education', label: 'Education' })
+  if (props.recognition?.length) n.push({ id: 'recognition', label: 'Recognition' })
+  if (props.profile?.about?.length) n.push({ id: 'about', label: 'About' })
+  if (props.profile?.email) n.push({ id: 'contact', label: 'Contact' })
   return n
 })
 </script>
@@ -44,8 +54,11 @@ const navItems = computed(() => {
         <div id="work" class="c-projects" v-if="projects.length">
           <div v-for="p in projects" :key="p.id" class="c-proj">
             <span class="pname">{{ p.title }}</span>
-            <span class="ptag" v-if="techList(p.tech_stack)[0]">{{ techList(p.tech_stack)[0] }}</span>
-            <a class="pyr" :href="p.project_url || p.repo_url || p.design_url || '#'" target="_blank">View ↗</a>
+            <span class="ptag" v-if="p.kind || techList(p.tech_stack)[0]">{{ p.kind || techList(p.tech_stack)[0] }}</span>
+            <div class="c-proj-actions">
+              <button v-if="galleryOf(p).length" type="button" class="pyr as-btn" @click="openGallery(p)">Gallery ({{ galleryOf(p).length }})</button>
+              <a v-if="projectLink(p)" class="pyr" :href="projectLink(p)" target="_blank" rel="noopener">View ↗</a>
+            </div>
           </div>
         </div>
 
@@ -66,8 +79,60 @@ const navItems = computed(() => {
             </div>
           </div>
         </div>
+
+        <div id="education" class="c-block" v-if="education.length">
+          <h4>Education</h4>
+          <div v-for="e in education" :key="e.id" class="c-row">
+            <strong>{{ e.degree }}</strong> — {{ e.school }}
+            <span class="c-dates">{{ e.start_date }} – {{ e.end_date }}</span>
+          </div>
+        </div>
+
+        <div id="recognition" class="c-block" v-if="recognition?.length">
+          <h4>Recognition</h4>
+          <div v-for="r in recognition" :key="r.id" class="c-row">
+            <strong>{{ r.title }}</strong> — {{ r.issuer }}
+            <span class="c-dates">{{ r.date }}</span>
+          </div>
+        </div>
+
+        <div id="about" class="c-block" v-if="profile?.about?.length">
+          <h4>About</h4>
+          <div class="c-about">
+            <p v-for="(para, i) in profile.about" :key="i">{{ para }}</p>
+          </div>
+        </div>
+
+        <div id="contact" class="c-block c-contact" v-if="profile?.email">
+          <h4>Contact</h4>
+          <p class="c-prompt">&gt; contact --{{ (profile?.name || 'me').split(' ')[0].toLowerCase() }}</p>
+          <p class="c-contact-lead">Open to roles, freelance work, or just talking shop about a project.</p>
+          <div class="c-links c-contact-links">
+            <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+            <a v-if="profile?.phone" :href="telHref(profile.phone)">{{ profile.phone }}</a>
+          </div>
+
+          <form class="c-form" v-if="profile?.formspree_url" @submit.prevent="submit">
+            <template v-if="!sent">
+              <div class="c-form-row">
+                <input id="c-name" v-model="form.name" type="text" placeholder="Name" required autocomplete="name" aria-label="Name" />
+                <input id="c-email" v-model="form.email" type="email" placeholder="Email" required autocomplete="email" aria-label="Email" />
+              </div>
+              <input id="c-subject" v-model="form.subject" type="text" placeholder="Subject" required aria-label="Subject" />
+              <textarea id="c-message" v-model="form.message" rows="4" placeholder="Message" required aria-label="Message"></textarea>
+            <input class="gotcha" :id="'c-gotcha'" type="text" v-model="form._gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <button class="c-send" type="submit" :disabled="sending">{{ sending ? 'sending…' : 'send ↵' }}</button>
+              <p class="form-status error" v-if="error" role="status">{{ error }}</p>
+            </template>
+            <div class="form-done" v-else role="status">
+              <p>Message sent — I'll get back to you soon.</p>
+              <button class="c-send" type="button" @click="again">send another</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
+    <ProjectGallery :open="galleryOpen" :images="galleryImages" :title="galleryTitle" @close="closeGallery" />
   </div>
 </template>
 
@@ -99,4 +164,25 @@ const navItems = computed(() => {
 .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
 .pill { background: color-mix(in srgb, var(--bg) 10%, transparent); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.82rem; }
 @media (max-width: 760px) { .c-inner { grid-template-columns: 1fr; } }
+.c-about p { margin: 0 0 0.9rem; line-height: 1.7; font-size: 0.92rem; color: color-mix(in srgb, var(--bg) 72%, transparent); max-width: 68ch; }
+.c-about p:last-child { margin-bottom: 0; }
+.c-proj-actions { display: flex; gap: 0.9rem; align-items: center; }
+.c-proj .pyr.as-btn { background: none; border: 0; padding: 0; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); }
+.c-proj .pyr.as-btn:hover { text-decoration: underline; }
+.c-prompt { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--accent); margin: 0 0 0.75rem; }
+.c-contact-lead { font-size: 0.95rem; line-height: 1.6; color: color-mix(in srgb, var(--bg) 72%, transparent); margin: 0 0 1rem; max-width: 52ch; }
+.c-contact-links { margin-top: 0; flex-wrap: wrap; }
+.c-form { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; max-width: 34rem; }
+.c-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.c-form input, .c-form textarea { font-family: 'Space Mono', monospace; font-size: 0.82rem; color: var(--bg); background: color-mix(in srgb, var(--bg) 8%, transparent); border: 1px solid color-mix(in srgb, var(--bg) 18%, transparent); border-radius: 4px; padding: 0.65rem 0.8rem; resize: vertical; }
+.c-form input::placeholder, .c-form textarea::placeholder { color: color-mix(in srgb, var(--bg) 45%, transparent); }
+.c-form input:focus, .c-form textarea:focus { outline: 0; border-color: var(--accent2); }
+.c-send { font-family: 'Space Mono', monospace; font-size: 0.8rem; align-self: flex-start; background: var(--accent2); color: var(--ink); border: 0; border-radius: 4px; padding: 0.65rem 1.4rem; cursor: pointer; }
+.c-send:hover { background: var(--accent); }
+.c-send:disabled { opacity: 0.55; cursor: default; }
+.gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-status { font-family: 'Space Mono', monospace; font-size: 0.72rem; margin: 0; }
+.form-status.error { color: #ff9a91; }
+.form-done p { font-size: 0.92rem; margin: 0 0 1rem; color: color-mix(in srgb, var(--bg) 80%, transparent); }
+@media (max-width: 560px) { .c-form-row { grid-template-columns: 1fr; } }
 </style>
