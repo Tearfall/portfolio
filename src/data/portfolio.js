@@ -34,7 +34,7 @@ import mitolohiyaCover from '../assets/projects/mitolohiya.png'
 // 4 = Playful organic   — bright page, floating blobs, pill tags
 // 5 = Minimal centered  — quiet centered layout, single accent line
 // 6 = Bauhaus blocks    — full-bleed grid of solid color tiles
-export const ACTIVE_THEME = 3
+export const ACTIVE_THEME = 1
 
 // ------------------------------------------------------------
 // 2. COLOR PALETTE (shared by every theme)
