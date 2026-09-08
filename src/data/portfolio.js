@@ -72,7 +72,7 @@ export const profile = {
   location: 'General Trias, Cavite, Philippines',
   timezone: '',
   avatar_url: avatar,
-  resume_url: '',
+  resume_url: 'https://drive.google.com/file/d/1plWkpb2rT4L09BubiSVy3pWSHB-nb1Or/view?usp=sharing',
   github_url: 'https://github.com/tearfall',
   linkedin_url: 'https://www.linkedin.com/in/mavi-joar-crisostomo/',
   twitter_url: '',
