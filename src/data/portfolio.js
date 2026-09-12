@@ -26,21 +26,26 @@ import promeeCover from '../assets/projects/promee.png'
 import mitolohiyaCover from '../assets/projects/mitolohiya.png'
 
 // ------------------------------------------------------------
-// 1. COLOR PALETTE
+// 1. COLOR PALETTE (one light set, one dark set)
 // ------------------------------------------------------------
-//   bg = page background, surface = card fill, ink = text and rules,
-//   accent = the italic headline and the eyebrow, accent2 = primary button.
+// Visitors flip between the two with the toggle button in the corner; the
+// choice is remembered, and a first-time visitor gets whichever their
+// operating system is set to.
+//
+//   bg        page background
+//   surface   card and form fills
+//   ink       body text, rules, outlined buttons
+//   accent    the italic line in the headline, the eyebrow, underlines
+//   accent2   the primary button, card labels, "View project" links
+//   onAccent  text drawn on top of an accent fill — keep it readable
 export const PALETTE = {
-  bg: '#fafaf8',
-  surface: '#ffffff',
-  ink: '#1c1c1a',
-  accent: '#f29e4c',
-  accent2: '#048ba8',
+  light: { bg: '#fafaf8', surface: '#ffffff', ink: '#1c1c1a', accent: '#f29e4c', accent2: '#048ba8', onAccent: '#ffffff' },
+  dark:  { bg: '#14130f', surface: '#1e1c17', ink: '#f3f0e7', accent: '#f2a65a', accent2: '#45bcd4', onAccent: '#14130f' },
 }
 
 // The teal/slate palette from the plain-HTML portfolio, if you prefer it —
-// swap it into PALETTE above:
-// { bg: '#eff4f7', surface: '#e3ecf1', ink: '#10202b', accent: '#0e7c86', accent2: '#4c6473' }
+// drop it into `light` above:
+// { bg: '#eff4f7', surface: '#e3ecf1', ink: '#10202b', accent: '#0e7c86', accent2: '#4c6473', onAccent: '#ffffff' }
 
 // ------------------------------------------------------------
 // 2. PROFILE

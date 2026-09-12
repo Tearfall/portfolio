@@ -2,6 +2,8 @@
 
 * { box-sizing: border-box; }
 
+/* Holding colors for the first paint only. Once Home.vue mounts it writes the
+   active theme's palette straight onto <html>, and those inline values win. */
 :root {
   --ink: #1c1c1a;
   --bg: #fafaf8;
@@ -9,6 +11,15 @@
   --muted: #5c5c56;
   --accent: #f29e4c;
   --line: #e4e2da;
+}
+
+:root[data-mode='dark'] {
+  --ink: #f3f0e7;
+  --bg: #14130f;
+  --panel: #1e1c17;
+  --muted: #a09b90;
+  --accent: #f2a65a;
+  --line: #2b2823;
 }
 
 body {

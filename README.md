@@ -6,19 +6,32 @@ no API keys, no admin panel. Everything on the page comes from one file.
 ## Editing the site
 
 All content lives in [`src/data/portfolio.js`](src/data/portfolio.js): profile, projects,
-skills, and colors. Edit that file, commit, done.
+skills, and the color palette. Edit that file, commit, done.
 
-The page deliberately stops at projects and skills — work history, education
-and awards live in the linked resume (`profile.resume_url`) rather than being
+The page deliberately stops at projects and skills — work history, education and
+awards live in the linked resume (`profile.resume_url`) rather than being
 repeated here. The `about` copy carries the short narrative version.
 
 ## The page
 
 One layout, in [`src/views/Portfolio.vue`](src/views/Portfolio.vue): a centered
 hero, then skills, projects, about and a contact form. Cream page, serif
-headline, rounded cards.
-[`src/views/Home.vue`](src/views/Home.vue) wraps it with the palette and the
-footer.
+headline, rounded cards. [`src/views/Home.vue`](src/views/Home.vue) wraps it with
+the palette and the footer; it is what resolves the light/dark colors onto
+`<html>`.
+
+## Light and dark mode
+
+`PALETTE` in `portfolio.js` holds a light set and a dark set — the comments above
+it say what each color slot is used for. Visitors flip between them with the icon
+button in the corner; the choice is saved to `localStorage`, and a first-time
+visitor gets whichever their operating system is set to. A small script in
+`index.html` settles the mode before the first paint, so a dark-mode visitor
+never sees a flash of the light page.
+
+The button is [`src/components/ThemeToggle.vue`](src/components/ThemeToggle.vue)
+and the shared state lives in
+[`src/lib/useColorMode.js`](src/lib/useColorMode.js).
 
 ## Images
 
@@ -33,7 +46,9 @@ Clicking a project's cover opens a lightbox on that array — arrow keys, swipe,
 thumbnail strip, Esc to close.
 
 The lightbox itself is [`src/components/ProjectGallery.vue`](src/components/ProjectGallery.vue)
-and it reads the same `PALETTE`, so it restyles itself with the rest of the site.
+and it reads the same palette, so it restyles itself with the rest of the site.
+Its scrim stays dark in both modes on purpose, so the screenshots are always the
+brightest thing on screen.
 
 ## Contact form
 

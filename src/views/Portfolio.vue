@@ -4,6 +4,7 @@ import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from
 import { useGallery } from '../lib/useGallery'
 import { useContactForm } from '../lib/useContactForm'
 import ProjectGallery from '../components/ProjectGallery.vue'
+import ThemeToggle from '../components/ThemeToggle.vue'
 
 const props = defineProps({
   profile: Object,
@@ -18,6 +19,7 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
 
 <template>
   <div class="a-page">
+    <ThemeToggle />
     <header class="hero">
       <p class="eyebrow" v-if="profile?.location">{{ profile.location }}</p>
       <h1>{{ profile?.name || 'Your Name' }}<br /><em>{{ profile?.title || 'Your Title' }}</em></h1>
@@ -115,7 +117,7 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
 .sub { font-size: 1.1rem; max-width: 50ch; margin: 1.4rem auto 0; line-height: 1.6; color: color-mix(in srgb, var(--ink) 65%, transparent); }
 .row { display: flex; gap: 0.85rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap; }
 .btn { font-family: 'Space Mono', monospace; font-size: 13px; padding: 0.75rem 1.4rem; border-radius: 999px; text-decoration: none; font-weight: 700; }
-.btn.primary { background: var(--accent2); color: white; }
+.btn.primary { background: var(--accent2); color: var(--on-accent); }
 .btn.ghost { border: 1.5px solid var(--ink); color: var(--ink); }
 .section { margin-top: 3.5rem; }
 .section h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.5rem; border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); padding-bottom: 0.6rem; margin-bottom: 1.5rem; }
@@ -156,7 +158,7 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
 .contact-card .btn:disabled { opacity: 0.6; cursor: default; }
 .gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .form-status { font-family: 'Space Mono', monospace; font-size: 0.75rem; margin: 0.6rem 0 0; }
-.form-status.error { color: #b3261e; }
+.form-status.error { color: var(--danger); }
 .form-done p { margin: 0 0 1rem; }
 @media (max-width: 720px) { .contact-a .contact-grid { grid-template-columns: 1fr; } }
 </style>
