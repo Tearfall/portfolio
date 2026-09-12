@@ -8,9 +8,6 @@ import ProjectGallery from '../components/ProjectGallery.vue'
 const props = defineProps({
   profile: Object,
   projects: Array,
-  experience: Array,
-  education: Array,
-  recognition: Array,
   skills: Array,
 })
 
@@ -57,36 +54,6 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
           <p class="note" v-if="p.note">{{ p.note }}</p>
           <a v-if="projectLink(p)" class="card-link" :href="projectLink(p)" target="_blank" rel="noopener">View project ↗</a>
         </article>
-      </div>
-    </section>
-
-    <section v-if="experience.length" class="section">
-      <h2>Experience</h2>
-      <div class="entries">
-        <div v-for="e in experience" :key="e.id" class="entry">
-          <div class="entry-head"><strong>{{ e.role }}</strong> — {{ e.company }}<span class="dates">{{ e.start_date }} – {{ e.end_date || 'Present' }}</span></div>
-          <p class="track" v-if="e.track">{{ e.track }}</p>
-          <p v-if="e.description">{{ e.description }}</p>
-        </div>
-      </div>
-    </section>
-
-    <section v-if="education.length" class="section">
-      <h2>Education</h2>
-      <div class="entries">
-        <div v-for="e in education" :key="e.id" class="entry">
-          <div class="entry-head"><strong>{{ e.degree }}</strong> — {{ e.school }}<span class="dates">{{ e.start_date }} – {{ e.end_date }}</span></div>
-          <p v-if="e.description">{{ e.description }}</p>
-        </div>
-      </div>
-    </section>
-
-    <section v-if="recognition?.length" class="section">
-      <h2>Recognition</h2>
-      <div class="entries">
-        <div v-for="r in recognition" :key="r.id" class="entry">
-          <div class="entry-head"><strong>{{ r.title }}</strong> — {{ r.issuer }}<span class="dates">{{ r.date }}</span></div>
-        </div>
       </div>
     </section>
 
@@ -158,16 +125,11 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
 .card .tag { font-family: 'Space Mono', monospace; font-size: 10.5px; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.06em; }
 .card h3 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.15rem; margin: 0.4rem 0 0.3rem; }
 .card p { font-size: 0.88rem; color: color-mix(in srgb, var(--ink) 60%, transparent); margin: 0; line-height: 1.5; }
-.entries { display: flex; flex-direction: column; gap: 1.2rem; }
-.entry-head { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
-.dates { margin-left: auto; font-family: 'Space Mono', monospace; font-size: 0.78rem; color: color-mix(in srgb, var(--ink) 55%, transparent); }
-.entry p { margin: 0.3rem 0 0; color: color-mix(in srgb, var(--ink) 60%, transparent); line-height: 1.5; }
 .skill-group { margin-bottom: 1rem; }
 .skill-group h4 { margin: 0 0 0.5rem; color: color-mix(in srgb, var(--ink) 55%, transparent); font-weight: 600; }
 .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .pill { background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.85rem; }
 .card .note { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent2); margin-top: 0.5rem; line-height: 1.45; }
-.entry .track { margin: 0.3rem 0 0; font-size: 0.9rem; color: color-mix(in srgb, var(--ink) 55%, transparent); }
 .about-copy p { margin: 0 0 1rem; line-height: 1.7; color: color-mix(in srgb, var(--ink) 70%, transparent); max-width: 68ch; }
 .about-copy p:last-child { margin-bottom: 0; }
 .card-cover { display: block; position: relative; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 10px; overflow: hidden; margin-bottom: 0.75rem; }

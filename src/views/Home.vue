@@ -1,5 +1,5 @@
 <script setup>
-import { PALETTE, profile, projects, experience, education, recognition, skills } from '../data/portfolio'
+import { PALETTE, profile, projects, skills } from '../data/portfolio'
 import Portfolio from './Portfolio.vue'
 
 const themeVars = {
@@ -16,9 +16,6 @@ const themeVars = {
     <Portfolio
       :profile="profile"
       :projects="projects"
-      :experience="experience"
-      :education="education"
-      :recognition="recognition"
       :skills="skills"
     />
     <footer class="site-footer">

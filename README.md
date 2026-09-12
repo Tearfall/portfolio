@@ -6,13 +6,17 @@ no API keys, no admin panel. Everything on the page comes from one file.
 ## Editing the site
 
 All content lives in [`src/data/portfolio.js`](src/data/portfolio.js): profile, projects,
-experience, education, recognition, skills, and colors. Edit that file, commit, done.
+skills, and colors. Edit that file, commit, done.
+
+The page deliberately stops at projects and skills — work history, education
+and awards live in the linked resume (`profile.resume_url`) rather than being
+repeated here. The `about` copy carries the short narrative version.
 
 ## The page
 
 One layout, in [`src/views/Portfolio.vue`](src/views/Portfolio.vue): a centered
-hero, then skills, projects, experience, education, recognition, about and a
-contact form. Cream page, serif headline, rounded cards.
+hero, then skills, projects, about and a contact form. Cream page, serif
+headline, rounded cards.
 [`src/views/Home.vue`](src/views/Home.vue) wraps it with the palette and the
 footer.
 
