@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from 'vue'
-import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../../lib/portfolioHelpers'
-import { useGallery } from '../../lib/useGallery'
-import { useContactForm } from '../../lib/useContactForm'
-import ProjectGallery from '../../components/ProjectGallery.vue'
+import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../lib/portfolioHelpers'
+import { useGallery } from '../lib/useGallery'
+import { useContactForm } from '../lib/useContactForm'
+import ProjectGallery from '../components/ProjectGallery.vue'
 
 const props = defineProps({
   profile: Object,

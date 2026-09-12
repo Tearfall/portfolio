@@ -26,20 +26,10 @@ import promeeCover from '../assets/projects/promee.png'
 import mitolohiyaCover from '../assets/projects/mitolohiya.png'
 
 // ------------------------------------------------------------
-// 1. WHICH THEME TO SHOW
+// 1. COLOR PALETTE
 // ------------------------------------------------------------
-// 1 = Warm editorial    — cream page, serif headline, rounded cards
-// 2 = Structural grid   — bold uppercase, monospace labels, ruled rows
-// 3 = Dark split        — dark sidebar next to a deep panel
-// 4 = Playful organic   — bright page, floating blobs, pill tags
-// 5 = Minimal centered  — quiet centered layout, single accent line
-// 6 = Bauhaus blocks    — full-bleed grid of solid color tiles
-export const ACTIVE_THEME = 1
-
-// ------------------------------------------------------------
-// 2. COLOR PALETTE (shared by every theme)
-// ------------------------------------------------------------
-// Each theme spends these differently — see the guide below.
+//   bg = page background, surface = card fill, ink = text and rules,
+//   accent = the italic headline and the eyebrow, accent2 = primary button.
 export const PALETTE = {
   bg: '#fafaf8',
   surface: '#ffffff',
@@ -52,15 +42,8 @@ export const PALETTE = {
 // swap it into PALETTE above:
 // { bg: '#eff4f7', surface: '#e3ecf1', ink: '#10202b', accent: '#0e7c86', accent2: '#4c6473' }
 
-// 1 — bg = page cream, surface = card fill, ink = text, accent = highlights/tags, accent2 = primary button
-// 2 — bg = page fill, ink = headline/rules/text, accent = labels + metadata (surface/accent2 unused)
-// 3 — ink = both dark panels, bg = light text on dark, accent = nav highlight + tags, accent2 = links
-// 4 — bg = page fill, accent = blob + sparkles + pill text, accent2 = second blob, ink = headline + pill fill
-// 5 — bg = page fill, surface = thumbnail fallback, ink = text, accent = kicker/divider/links/tech
-// 6 — ink = hero + footer tiles, accent/accent2 = alternating tile fills, bg = page gutter
-
 // ------------------------------------------------------------
-// 3. PROFILE
+// 2. PROFILE
 // ------------------------------------------------------------
 export const profile = {
   name: 'Joar Crisostomo',
@@ -91,7 +74,7 @@ export const profile = {
 }
 
 // ------------------------------------------------------------
-// 4. PROJECTS
+// 3. PROJECTS
 // ------------------------------------------------------------
 // tech_stack is a comma-separated string; the themes split it themselves.
 // image_url is the cover shown on the card. `gallery` is what the lightbox
@@ -186,7 +169,7 @@ export const projects = [
 ]
 
 // ------------------------------------------------------------
-// 5. EXPERIENCE (newest first)
+// 4. EXPERIENCE (newest first)
 // ------------------------------------------------------------
 // Leave end_date as '' for a role you're still in — themes show "Present".
 // Line breaks inside a description are preserved on the page.
@@ -225,7 +208,7 @@ export const experience = [
 ]
 
 // ------------------------------------------------------------
-// 6. EDUCATION (newest first)
+// 5. EDUCATION (newest first)
 // ------------------------------------------------------------
 export const education = [
   {
@@ -247,7 +230,7 @@ export const education = [
 ]
 
 // ------------------------------------------------------------
-// 7. RECOGNITION (newest first)
+// 6. RECOGNITION (newest first)
 // ------------------------------------------------------------
 export const recognition = [
   { id: 'cum-laude', title: "IT Customer Support Basics", issuer: 'Cisco Networking Academy ', date: 'Aug 2026' },
@@ -259,7 +242,7 @@ export const recognition = [
 ]
 
 // ------------------------------------------------------------
-// 8. SKILLS
+// 7. SKILLS
 // ------------------------------------------------------------
 // `category` groups them on the page. The order here is the order shown.
 export const skills = [

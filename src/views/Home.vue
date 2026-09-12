@@ -1,17 +1,6 @@
 <script setup>
-import { computed } from 'vue'
-import { ACTIVE_THEME, PALETTE, profile, projects, experience, education, recognition, skills } from '../data/portfolio'
-import ThemeA from './themes/ThemeA.vue'
-import ThemeB from './themes/ThemeB.vue'
-import ThemeC from './themes/ThemeC.vue'
-import ThemeD from './themes/ThemeD.vue'
-import ThemeE from './themes/ThemeE.vue'
-import ThemeF from './themes/ThemeF.vue'
-
-// ACTIVE_THEME in src/data/portfolio.js picks which of these renders.
-const THEME_COMPONENTS = { 1: ThemeA, 2: ThemeB, 3: ThemeC, 4: ThemeD, 5: ThemeE, 6: ThemeF }
-
-const activeTheme = computed(() => THEME_COMPONENTS[ACTIVE_THEME] || ThemeE)
+import { PALETTE, profile, projects, experience, education, recognition, skills } from '../data/portfolio'
+import Portfolio from './Portfolio.vue'
 
 const themeVars = {
   '--bg': PALETTE.bg,
@@ -24,8 +13,7 @@ const themeVars = {
 
 <template>
   <div class="theme-root" :style="themeVars">
-    <component
-      :is="activeTheme"
+    <Portfolio
       :profile="profile"
       :projects="projects"
       :experience="experience"
