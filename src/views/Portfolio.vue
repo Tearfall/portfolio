@@ -91,7 +91,7 @@ const year = new Date().getFullYear()
     <header class="hero">
       <p class="eyebrow">General Trias, Cavite, Philippines</p>
       <h1>Joar Crisostomo<br /><em>Full Stack Web Developer</em></h1>
-      <p class="sub">I build features end to end database, API, and the interface someone actually clicks. Currently at GoodStrings Inc., working on a School Management System and CRM System. BS Computer Science, Cum Laude, STI College Dasmariñas.</p>
+      <p class="sub">I build features end to end database, API, and the interface someone actually clicks. Developing with modern web technologies to create efficient and user-friendly applications.</p>
       <div class="row">
         <a class="btn primary" href="mailto:crisostomo.mavijoar2003@gmail.com">Get in touch</a>
         <a class="btn ghost" href="https://drive.google.com/file/d/1plWkpb2rT4L09BubiSVy3pWSHB-nb1Or/view?usp=sharing" target="_blank" rel="noopener">Resume</a>
@@ -201,8 +201,9 @@ const year = new Date().getFullYear()
     <section class="section">
       <h2>About</h2>
       <div class="about-copy">
-        <p>I graduated Cum Laude with a BS in Computer Science from STI College Dasmariñas in July 2025, after an ICT: Mobile App and Web Development track (graduated with honors, 2021) that got me writing code years before the degree did. GoodStrings Inc. is my first web development job. I started as an intern in January 2025 and was brought on as a junior web developer six months later.</p>
-        <p>Outside of work, I explored ideas through school projects: a study app, a productivity app, and a game. I enjoy the parts of software most people skip past — the query that has to be right, the interface that has to be clear and usable.</p>
+        <p>The old me would've been worried about centering a div. He had no idea the hard part was everything behind it.</p>
+        <p>I started out designing prototypes and building interfaces for web and mobile applications. Real-world problems taught me that a button has to work, not just look right. So I learned what sits behind it.</p>
+        <p>The query that has to be correct, the screen that has to be clear — those are the parts I like, and they're usually the parts people skip.</p>
       </div>
     </section>
 
