@@ -2,13 +2,18 @@
 
 * { box-sizing: border-box; }
 
+/* Holding colors for the first paint only. Once Portfolio.vue mounts it writes
+   the active palette straight onto <html>, and those inline values win. */
 :root {
   --ink: #1c1c1a;
   --bg: #fafaf8;
-  --panel: #ffffff;
-  --muted: #5c5c56;
-  --accent: #f29e4c;
-  --line: #e4e2da;
+  --band: #f2eee4;
+}
+
+:root[data-mode='dark'] {
+  --ink: #f3f0e7;
+  --bg: #14130f;
+  --band: #0e0d0a;
 }
 
 body {
@@ -16,10 +21,4 @@ body {
   font-family: 'Bricolage Grotesque', sans-serif;
   color: var(--ink);
   background: var(--bg);
-}
-
-/* Descriptions in portfolio.js may contain line breaks (bullet lists) —
-   keep them instead of collapsing everything onto one line. */
-#app p {
-  white-space: pre-line;
 }

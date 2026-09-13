@@ -1,63 +1,69 @@
 # Portfolio
 
-Personal portfolio of Mavi Joar Crisostomo. Vue 3 + Vite, fully static — no database,
-no API keys, no admin panel. Everything on the page comes from one file.
+Personal portfolio of Mavi Joar Crisostomo. Vue 3 + Vite, fully static — no
+database, no API keys, no admin panel, and no content layer: the page is written
+directly in its template.
 
 ## Editing the site
 
-All content lives in [`src/data/portfolio.js`](src/data/portfolio.js): profile, projects,
-experience, education, recognition, skills, colors, and the active theme. Edit that
-file, commit, done.
+Everything on the page lives in
+[`src/views/Portfolio.vue`](src/views/Portfolio.vue) — the hero copy, the skills,
+the projects, the about text and the contact details are all plain markup. Edit
+it, commit, done.
 
-## Switching themes
+It used to read from a `portfolio.js` data file, which existed so six alternate
+layouts could share one set of content. With one layout left, the indirection
+cost more than it saved.
 
-Six layouts are available. Pick one by changing a single number at the top of
-`src/data/portfolio.js`:
+The page deliberately stops at projects and skills — work history, education and
+awards live in the linked resume rather than being repeated here. The About copy
+carries the short narrative version.
 
-```js
-export const ACTIVE_THEME = 5
-```
+## The page
 
-| # | Theme | Look |
-|---|-------|------|
-| 1 | Warm editorial | Cream page, serif headline, rounded cards |
-| 2 | Structural grid | Bold uppercase, monospace labels, ruled rows |
-| 3 | Dark split | Dark sidebar next to a deep panel |
-| 4 | Playful organic | Bright page, floating color blobs, pill tags |
-| 5 | Minimal centered | Quiet centered layout, single accent line |
-| 6 | Bauhaus blocks | Full-bleed grid of solid color tiles |
+One column, divided into full-bleed color bands so the sections read as blocks
+rather than one continuous sheet: hero, skills, work, about, contact. Cream page,
+serif headline, rounded cards.
 
-Every theme reads the same data and the same `PALETTE` (also in `portfolio.js`), so
-switching is safe — nothing else needs to change. The comments next to `PALETTE`
-explain how each theme uses each color.
+Projects come in two tiers. The two under **Selected work** get a full card with
+a cover image and a description; the rest sit under **Also built** as one ruled
+line each. Moving a project between tiers means moving its markup.
+
+## Light and dark mode
+
+The `PALETTE` const at the top of `Portfolio.vue` holds a light set and a dark
+set; the comment above it says what each color slot does. Visitors flip between
+them with the icon button in the corner; the choice is saved to `localStorage`,
+and a first-time visitor gets whichever their operating system is set to. A small
+script in `index.html` settles the mode before the first paint, so a dark-mode
+visitor never sees a flash of the light page.
+
+The button is [`src/components/ThemeToggle.vue`](src/components/ThemeToggle.vue)
+and the shared state lives in
+[`src/lib/useColorMode.js`](src/lib/useColorMode.js).
 
 ## Images
 
-Project covers and the avatar are imported from `src/assets/` at the top of
-`portfolio.js`. Drop a new image in `src/assets/projects/`, import it, and point a
-project's `image_url` at it.
+Project covers and the avatar are imported at the top of `Portfolio.vue`. Drop a
+new image in `src/assets/projects/`, import it, and reference it in the markup.
 
 ## Project galleries
 
-Each project has a `gallery` array (Finance Hub has 8 screenshots, Talos 5).
-Clicking a project's cover opens a lightbox on that array — arrow keys, swipe,
-thumbnail strip, Esc to close. All six themes have it; only the trigger differs
-(a hover pill on the card themes, a `⤢ 8` button on the list themes).
+Clicking a project's cover opens a lightbox — arrow keys, swipe, thumbnail strip,
+Esc to close. The multi-shot galleries are the two arrays near the top of
+`Portfolio.vue`; `openGallery(images, title)` takes it from there.
 
-The lightbox itself is [`src/components/ProjectGallery.vue`](src/components/ProjectGallery.vue)
-and it reads the same `PALETTE`, so it restyles itself with the rest of the site.
+The lightbox itself is
+[`src/components/ProjectGallery.vue`](src/components/ProjectGallery.vue). Its
+scrim stays dark in both modes on purpose, so the screenshots are always the
+brightest thing on screen.
 
 ## Contact form
 
-Each theme has its own contact section — different layout, different copy,
-different field styling. They all post to `profile.formspree_url` in
-[`src/data/portfolio.js`](src/data/portfolio.js); clear that value and each
-theme falls back to showing contact details without a form.
-
-The submit logic is shared in
-[`src/lib/useContactForm.js`](src/lib/useContactForm.js) (sending / sent / error
-states, Formspree validation messages, a `_gotcha` honeypot), so a fix there
-applies to all six.
+The form posts to the Formspree endpoint passed to `useContactForm` in
+`Portfolio.vue`. The submit logic lives in
+[`src/lib/useContactForm.js`](src/lib/useContactForm.js) — sending / sent / error
+states, Formspree validation messages, and a `_gotcha` honeypot.
 
 ## Development
 

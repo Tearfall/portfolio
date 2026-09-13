@@ -130,7 +130,11 @@ onBeforeUnmount(release)
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  background: color-mix(in srgb, var(--ink) 90%, black);
+  /* Deliberately not theme-driven: the scrim is dark in both modes so the
+     images stay the brightest thing on screen. */
+  --lb-scrim: #0c0c0b;
+  --lb-ink: #f6f5f1;
+  background: color-mix(in srgb, var(--lb-scrim) 94%, transparent);
   backdrop-filter: blur(6px);
   animation: lb-in 0.16s ease-out;
 }
@@ -145,7 +149,7 @@ onBeforeUnmount(release)
   align-items: center;
   gap: 1rem;
   flex-shrink: 0;
-  color: var(--bg);
+  color: var(--lb-ink);
 }
 .lb-title {
   font-family: 'Bricolage Grotesque', sans-serif;
@@ -160,8 +164,8 @@ onBeforeUnmount(release)
 .lb-close {
   margin-left: auto;
   background: none;
-  border: 1px solid color-mix(in srgb, var(--bg) 35%, transparent);
-  color: var(--bg);
+  border: 1px solid color-mix(in srgb, var(--lb-ink) 35%, transparent);
+  color: var(--lb-ink);
   border-radius: 50%;
   width: 34px;
   height: 34px;
@@ -169,7 +173,7 @@ onBeforeUnmount(release)
   cursor: pointer;
   line-height: 1;
 }
-.lb-close:hover { background: color-mix(in srgb, var(--bg) 15%, transparent); }
+.lb-close:hover { background: color-mix(in srgb, var(--lb-ink) 15%, transparent); }
 
 .lb-stage {
   flex: 1;
@@ -184,14 +188,14 @@ onBeforeUnmount(release)
   max-height: 100%;
   object-fit: contain;
   border-radius: 4px;
-  background: var(--bg);
+  background: var(--lb-ink);
 }
 
 .lb-nav {
   flex-shrink: 0;
-  background: color-mix(in srgb, var(--bg) 12%, transparent);
+  background: color-mix(in srgb, var(--lb-ink) 12%, transparent);
   border: 0;
-  color: var(--bg);
+  color: var(--lb-ink);
   font-size: 2rem;
   line-height: 1;
   width: 44px;
@@ -199,7 +203,7 @@ onBeforeUnmount(release)
   border-radius: 6px;
   cursor: pointer;
 }
-.lb-nav:hover { background: var(--accent); color: var(--ink); }
+.lb-nav:hover { background: var(--accent); color: var(--lb-scrim); }
 
 .lb-strip {
   display: flex;

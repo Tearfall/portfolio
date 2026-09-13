@@ -1,18 +1,16 @@
 import { ref } from 'vue'
-import { galleryOf } from './portfolioHelpers'
 
-// Shared lightbox state. Each theme calls this once and drops a
-// <ProjectGallery> into its template — see any Theme*.vue for the pattern.
+// Shared lightbox state. Portfolio.vue calls this once, drops a
+// <ProjectGallery> into its template, and hands openGallery the shots.
 export function useGallery() {
   const galleryOpen = ref(false)
   const galleryImages = ref([])
   const galleryTitle = ref('')
 
-  function openGallery(project) {
-    const images = galleryOf(project)
-    if (!images.length) return
+  function openGallery(images, title = '') {
+    if (!images?.length) return
     galleryImages.value = images
-    galleryTitle.value = project.title || ''
+    galleryTitle.value = title
     galleryOpen.value = true
   }
 
