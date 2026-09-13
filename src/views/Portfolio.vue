@@ -1,98 +1,239 @@
 <script setup>
-import { computed } from 'vue'
-import { techList, groupSkillsByCategory, galleryOf, projectLink, telHref } from '../lib/portfolioHelpers'
+import { computed, watchEffect } from 'vue'
+import { useColorMode } from '../lib/useColorMode'
 import { useGallery } from '../lib/useGallery'
 import { useContactForm } from '../lib/useContactForm'
 import ProjectGallery from '../components/ProjectGallery.vue'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
-const props = defineProps({
-  profile: Object,
-  projects: Array,
-  skills: Array,
+import financeLanding from '../assets/projects/finance/landing.png'
+import financeDashboard from '../assets/projects/finance/dashboard.png'
+import financeCompany from '../assets/projects/finance/company.png'
+import financeAccountTitles from '../assets/projects/finance/account-titles.png'
+import financeTransaction from '../assets/projects/finance/transaction.png'
+import financeEntry from '../assets/projects/finance/entry.png'
+import financeImport from '../assets/projects/finance/import.png'
+import financeReports from '../assets/projects/finance/reports.png'
+
+import talos0 from '../assets/projects/talos/0.png'
+import talos1 from '../assets/projects/talos/1.png'
+import talos2 from '../assets/projects/talos/2.png'
+import talos3 from '../assets/projects/talos/3.png'
+import talos4 from '../assets/projects/talos/4.png'
+
+import nerdiCover from '../assets/projects/nerdi.png'
+import promeeCover from '../assets/projects/promee.png'
+import mitolohiyaCover from '../assets/projects/mitolohiya.png'
+
+// ------------------------------------------------------------
+// COLOR PALETTE — one light set, one dark set.
+// ------------------------------------------------------------
+//   bg        page background
+//   surface   card and form fills
+//   ink       body text, rules, outlined buttons
+//   accent    the italic line in the headline, the eyebrow, underlines
+//   accent2   the primary button, card labels, "View project" links
+//   onAccent  text drawn on top of an accent fill — keep it readable
+const PALETTE = {
+  light: { bg: '#fafaf8', surface: '#ffffff', ink: '#1c1c1a', accent: '#f29e4c', accent2: '#048ba8', onAccent: '#ffffff' },
+  dark:  { bg: '#14130f', surface: '#1e1c17', ink: '#f3f0e7', accent: '#f2a65a', accent2: '#45bcd4', onAccent: '#14130f' },
+}
+
+// Form errors are the one color that never belonged in the palette — the same
+// red either way, just pitched for the background behind it.
+const DANGER = { light: '#b3261e', dark: '#ff9a91' }
+
+const { mode } = useColorMode()
+
+const themeVars = computed(() => {
+  const p = PALETTE[mode.value] || PALETTE.light
+  return {
+    '--bg': p.bg,
+    '--surface': p.surface,
+    '--ink': p.ink,
+    '--accent': p.accent,
+    '--accent2': p.accent2,
+    '--on-accent': p.onAccent,
+    '--danger': DANGER[mode.value],
+  }
 })
 
-const skillsByCategory = computed(() => groupSkillsByCategory(props.skills))
+// Set on <html> rather than on .page so <body> and the overscroll strip past
+// the end of the document get the same background.
+watchEffect(() => {
+  const style = document.documentElement.style
+  for (const [name, value] of Object.entries(themeVars.value)) style.setProperty(name, value)
+})
+
+// The lightbox takes a list, so the multi-shot galleries stay as arrays.
+// Everything else about a project is written straight into the markup below.
+const financeShots = [
+  financeLanding,
+  financeDashboard,
+  financeCompany,
+  financeAccountTitles,
+  financeTransaction,
+  financeEntry,
+  financeImport,
+  financeReports,
+]
+const talosShots = [talos0, talos1, talos2, talos3, talos4]
+
 const { galleryOpen, galleryImages, galleryTitle, openGallery, closeGallery } = useGallery()
-const { form, error, sending, sent, submit, again } = useContactForm(() => props.profile?.formspree_url)
+const { form, error, sending, sent, submit, again } = useContactForm('https://formspree.io/f/mblojogz')
+
+const year = new Date().getFullYear()
 </script>
 
 <template>
-  <div class="a-page">
+  <div class="page">
     <ThemeToggle />
     <header class="hero">
-      <p class="eyebrow" v-if="profile?.location">{{ profile.location }}</p>
-      <h1>{{ profile?.name || 'Your Name' }}<br /><em>{{ profile?.title || 'Your Title' }}</em></h1>
-      <p class="sub" v-if="profile?.bio">{{ profile.bio }}</p>
+      <p class="eyebrow">General Trias, Cavite, Philippines</p>
+      <h1>Joar Crisostomo<br /><em>Full Stack Web Developer</em></h1>
+      <p class="sub">I build features end to end database, API, and the interface someone actually clicks. Currently at GoodStrings Inc., working on a School Management System and CRM System. BS Computer Science, Cum Laude, STI College Dasmariñas.</p>
       <div class="row">
-        <a v-if="profile?.email" class="btn primary" :href="`mailto:${profile.email}`">Get in touch</a>
-        <a v-if="profile?.resume_url" class="btn ghost" :href="profile.resume_url" target="_blank">Resume</a>
-        <a v-if="profile?.github_url" class="btn ghost" :href="profile.github_url" target="_blank">GitHub</a>
-        <a v-if="profile?.linkedin_url" class="btn ghost" :href="profile.linkedin_url" target="_blank">LinkedIn</a>
+        <a class="btn primary" href="mailto:crisostomo.mavijoar2003@gmail.com">Get in touch</a>
+        <a class="btn ghost" href="https://drive.google.com/file/d/1plWkpb2rT4L09BubiSVy3pWSHB-nb1Or/view?usp=sharing" target="_blank" rel="noopener">Resume</a>
+        <a class="btn ghost" href="https://github.com/tearfall" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/mavi-joar-crisostomo/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
     </header>
 
-    <section v-if="skills.length" class="section">
+    <section class="section">
       <h2>Skills</h2>
-      <div v-for="(list, cat) in skillsByCategory" :key="cat" class="skill-group">
-        <h4>{{ cat }}</h4>
+      <div class="skill-group">
+        <h4>Frontend</h4>
         <div class="pills">
-          <span v-for="s in list" :key="s.id" class="pill">{{ s.name }}</span>
+          <span class="pill">Vue.js</span>
+          <span class="pill">HTML &amp; CSS</span>
+          <span class="pill">JavaScript</span>
+          <span class="pill">Tailwind</span>
+          <span class="pill">Bootstrap</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Backend</h4>
+        <div class="pills">
+          <span class="pill">PHP &amp; Laravel</span>
+          <span class="pill">Java</span>
+          <span class="pill">C#</span>
+          <span class="pill">MySQL</span>
+          <span class="pill">Firebase</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Tools</h4>
+        <div class="pills">
+          <span class="pill">Android Studio</span>
+          <span class="pill">Unity</span>
+          <span class="pill">Figma</span>
+          <span class="pill">Git &amp; GitHub</span>
         </div>
       </div>
     </section>
 
-    <section v-if="projects.length" class="section">
+    <section class="section">
       <h2>Projects</h2>
       <div class="cards">
-        <article v-for="p in projects" :key="p.id" class="card">
-          <button v-if="p.image_url" type="button" class="card-cover" @click="openGallery(p)">
-            <img :src="p.image_url" class="card-img" alt="" />
-            <span class="cover-hint">⤢ {{ galleryOf(p).length > 1 ? galleryOf(p).length + ' photos' : 'View image' }}</span>
+        <article class="card">
+          <button type="button" class="card-cover" @click="openGallery(financeShots, 'Finance Hub')">
+            <img :src="financeLanding" class="card-img" alt="" />
+            <span class="cover-hint">⤢ 8 photos</span>
           </button>
-          <span class="tag" v-if="p.kind || techList(p.tech_stack)[0]">{{ p.kind || techList(p.tech_stack)[0] }}</span>
-          <h3>{{ p.title }}</h3>
-          <p v-if="p.description">{{ p.description }}</p>
-          <p class="note" v-if="p.note">{{ p.note }}</p>
-          <a v-if="projectLink(p)" class="card-link" :href="projectLink(p)" target="_blank" rel="noopener">View project ↗</a>
+          <span class="tag">Web App</span>
+          <h3>Finance Hub</h3>
+          <p>An accounting module for administrators to manage invoicing, billing, general ledger entries, and financial reporting in one place. It replaces manual spreadsheet workflows with a centralized system for tracking transactions, generating reports, and keeping financial data synchronized across the platform.</p>
+          <p class="note">Independent project · In progress</p>
+          <a class="card-link" href="https://finance-hub-joar.fly.dev/" target="_blank" rel="noopener">View project ↗</a>
+        </article>
+
+        <article class="card">
+          <button type="button" class="card-cover" @click="openGallery(talosShots, 'Talos')">
+            <img :src="talos0" class="card-img" alt="" />
+            <span class="cover-hint">⤢ 5 photos</span>
+          </button>
+          <span class="tag">Thesis</span>
+          <h3>Talos</h3>
+          <p>A data visualization and analysis tool — my capstone project. Designed the interface in Figma, then built it with Vue.js on top of an HTML/CSS/JS foundation.</p>
+          <p class="note">Recognized: Outstanding Thesis/Capstone Defense, Dec 2024 · Best Software Development Project, Jul 2025</p>
+          <a class="card-link" href="https://www.figma.com/design/L2IDrSvZnucxpGm6iszkm1/Talos?node-id=1161-508&amp;p=f&amp;t=fTl9He3SvYYraBZp-0" target="_blank" rel="noopener">View project ↗</a>
+        </article>
+
+        <article class="card">
+          <button type="button" class="card-cover" @click="openGallery([nerdiCover], 'Nerdi')">
+            <img :src="nerdiCover" class="card-img" alt="" />
+            <span class="cover-hint">⤢ View image</span>
+          </button>
+          <span class="tag">Android</span>
+          <h3>Nerdi</h3>
+          <p>A study companion app with interactive flashcards and quiz-style review, built to make exam prep faster to set up and easier to stick with.</p>
+          <p class="note">Group project</p>
+          <a class="card-link" href="https://github.com/Tearfall/Nerdi" target="_blank" rel="noopener">View project ↗</a>
+        </article>
+
+        <article class="card">
+          <button type="button" class="card-cover" @click="openGallery([promeeCover], 'Promee')">
+            <img :src="promeeCover" class="card-img" alt="" />
+            <span class="cover-hint">⤢ View image</span>
+          </button>
+          <span class="tag">Android</span>
+          <h3>Promee</h3>
+          <p>A personal productivity app pairing a Kanban board with the 3-2-1 rule, so tasks get prioritized instead of just listed.</p>
+          <p class="note">Group project</p>
+          <a class="card-link" href="https://github.com/Tearfall/Promee_Application" target="_blank" rel="noopener">View project ↗</a>
+        </article>
+
+        <article class="card">
+          <button type="button" class="card-cover" @click="openGallery([mitolohiyaCover], 'Mitolohiya')">
+            <img :src="mitolohiyaCover" class="card-img" alt="" />
+            <span class="cover-hint">⤢ View image</span>
+          </button>
+          <span class="tag">Unity</span>
+          <h3>Mitolohiya</h3>
+          <p>A 2D pixel-art RPG with a world and story built around Philippine mythology — my first full game, end to end.</p>
+          <p class="note">Group project</p>
+          <a class="card-link" href="https://github.com/Tearfall/mito_dev" target="_blank" rel="noopener">View project ↗</a>
         </article>
       </div>
     </section>
 
-    <section v-if="profile?.about?.length" class="section">
+    <section class="section">
       <h2>About</h2>
       <div class="about-copy">
-        <p v-for="(para, i) in profile.about" :key="i">{{ para }}</p>
+        <p>I graduated Cum Laude with a BS in Computer Science from STI College Dasmariñas in July 2025, after an ICT: Mobile App and Web Development track (graduated with honors, 2021) that got me writing code years before the degree did. GoodStrings Inc. is my first web development job. I started as an intern in January 2025 and was brought on as a junior web developer six months later.</p>
+        <p>Outside of work, I explored ideas through school projects: a study app, a productivity app, and a game. I enjoy the parts of software most people skip past — the query that has to be right, the interface that has to be clear and usable.</p>
       </div>
     </section>
-    <section id="contact" class="section contact-a" v-if="profile?.email">
+
+    <section id="contact" class="section">
       <h2>Get in touch</h2>
       <div class="contact-grid">
         <div class="contact-side">
           <p class="contact-lead">Open to web development roles, freelance work, or just talking shop about a project.</p>
           <ul class="contact-facts">
-            <li v-if="profile?.email"><span>Email</span><a :href="`mailto:${profile.email}`">{{ profile.email }}</a></li>
-            <li v-if="profile?.phone"><span>Phone</span><a :href="telHref(profile.phone)">{{ profile.phone }}</a></li>
-            <li v-if="profile?.location"><span>Based in</span>{{ profile.location }}</li>
+            <li><span>Email</span><a href="mailto:crisostomo.mavijoar2003@gmail.com">crisostomo.mavijoar2003@gmail.com</a></li>
+            <li><span>Phone</span><a href="tel:+639944185812">+63 994 418 5812</a></li>
+            <li><span>Based in</span>General Trias, Cavite, Philippines</li>
           </ul>
           <div class="contact-socials">
-            <a v-if="profile?.github_url" :href="profile.github_url" target="_blank" rel="noopener">GitHub</a>
-            <a v-if="profile?.linkedin_url" :href="profile.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
-            <a v-if="profile?.instagram_url" :href="profile.instagram_url" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://github.com/tearfall" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mavi-joar-crisostomo/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://www.instagram.com/i.am.joar/" target="_blank" rel="noopener">Instagram</a>
           </div>
         </div>
 
-        <form class="contact-card" v-if="profile?.formspree_url" @submit.prevent="submit">
+        <form class="contact-card" @submit.prevent="submit">
           <template v-if="!sent">
-            <label for="a-name">Name</label>
-            <input id="a-name" v-model="form.name" type="text" required autocomplete="name" />
-            <label for="a-email">Email</label>
-            <input id="a-email" v-model="form.email" type="email" required autocomplete="email" />
-            <label for="a-subject">Subject</label>
-            <input id="a-subject" v-model="form.subject" type="text" required />
-            <label for="a-message">Message</label>
-            <textarea id="a-message" v-model="form.message" rows="5" required></textarea>
-            <input class="gotcha" :id="'a-gotcha'" type="text" v-model="form._gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <label for="contact-name">Name</label>
+            <input id="contact-name" v-model="form.name" type="text" required autocomplete="name" />
+            <label for="contact-email">Email</label>
+            <input id="contact-email" v-model="form.email" type="email" required autocomplete="email" />
+            <label for="contact-subject">Subject</label>
+            <input id="contact-subject" v-model="form.subject" type="text" required />
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" v-model="form.message" rows="5" required></textarea>
+            <input class="gotcha" type="text" v-model="form._gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
             <button class="btn primary" type="submit" :disabled="sending">{{ sending ? 'Sending…' : 'Send message' }}</button>
             <p class="form-status error" v-if="error" role="status">{{ error }}</p>
           </template>
@@ -104,12 +245,17 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
       </div>
     </section>
 
+    <footer class="site-footer">
+      <span>© {{ year }} Mavi Joar C. Crisostomo</span>
+      <span>General Trias, Cavite, Philippines</span>
+    </footer>
+
     <ProjectGallery :open="galleryOpen" :images="galleryImages" :title="galleryTitle" @close="closeGallery" />
   </div>
 </template>
 
 <style scoped>
-.a-page { background: var(--bg); color: var(--ink); font-family: 'Bricolage Grotesque', sans-serif; max-width: 880px; margin: 0 auto; padding: 4.5rem 1.5rem 4rem; }
+.page { background: var(--bg); color: var(--ink); font-family: 'Bricolage Grotesque', sans-serif; min-height: 100vh; max-width: 880px; margin: 0 auto; padding: 4.5rem 1.5rem 0; }
 .hero { text-align: center; margin-bottom: 3.5rem; }
 .eyebrow { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 1rem; text-transform: uppercase; }
 .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(2.4rem, 5.4vw, 3.6rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; margin: 0; }
@@ -140,7 +286,7 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
 .card-cover:hover .cover-hint, .card-cover:focus-visible .cover-hint { opacity: 1; }
 .card-link { display: inline-block; margin-top: 0.7rem; font-family: 'Space Mono', monospace; font-size: 0.74rem; color: var(--accent2); text-decoration: none; }
 .card-link:hover { text-decoration: underline; }
-.contact-a .contact-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 2.5rem; align-items: start; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 2.5rem; align-items: start; }
 .contact-lead { font-size: 1.02rem; line-height: 1.65; color: color-mix(in srgb, var(--ink) 65%, transparent); margin: 0 0 1.5rem; }
 .contact-facts { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
 .contact-facts li { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.95rem; }
@@ -160,5 +306,6 @@ const { form, error, sending, sent, submit, again } = useContactForm(() => props
 .form-status { font-family: 'Space Mono', monospace; font-size: 0.75rem; margin: 0.6rem 0 0; }
 .form-status.error { color: var(--danger); }
 .form-done p { margin: 0 0 1rem; }
-@media (max-width: 720px) { .contact-a .contact-grid { grid-template-columns: 1fr; } }
+.site-footer { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; max-width: 640px; margin: 4rem auto 0; padding: 1.5rem 0 3rem; font-family: 'Space Mono', monospace; font-size: 0.75rem; color: color-mix(in srgb, var(--ink) 50%, transparent); }
+@media (max-width: 720px) { .contact-grid { grid-template-columns: 1fr; } }
 </style>

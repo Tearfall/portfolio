@@ -1,33 +1,37 @@
 # Portfolio
 
-Personal portfolio of Mavi Joar Crisostomo. Vue 3 + Vite, fully static — no database,
-no API keys, no admin panel. Everything on the page comes from one file.
+Personal portfolio of Mavi Joar Crisostomo. Vue 3 + Vite, fully static — no
+database, no API keys, no admin panel, and no content layer: the page is written
+directly in its template.
 
 ## Editing the site
 
-All content lives in [`src/data/portfolio.js`](src/data/portfolio.js): profile, projects,
-skills, and the color palette. Edit that file, commit, done.
+Everything on the page lives in
+[`src/views/Portfolio.vue`](src/views/Portfolio.vue) — the hero copy, the skills,
+the projects, the about text and the contact details are all plain markup. Edit
+it, commit, done.
+
+It used to read from a `portfolio.js` data file, which existed so six alternate
+layouts could share one set of content. With one layout left, the indirection
+cost more than it saved.
 
 The page deliberately stops at projects and skills — work history, education and
-awards live in the linked resume (`profile.resume_url`) rather than being
-repeated here. The `about` copy carries the short narrative version.
+awards live in the linked resume rather than being repeated here. The About copy
+carries the short narrative version.
 
 ## The page
 
-One layout, in [`src/views/Portfolio.vue`](src/views/Portfolio.vue): a centered
-hero, then skills, projects, about and a contact form. Cream page, serif
-headline, rounded cards. [`src/views/Home.vue`](src/views/Home.vue) wraps it with
-the palette and the footer; it is what resolves the light/dark colors onto
-`<html>`.
+One column: a centered hero, then skills, projects, about and a contact form.
+Cream page, serif headline, rounded cards.
 
 ## Light and dark mode
 
-`PALETTE` in `portfolio.js` holds a light set and a dark set — the comments above
-it say what each color slot is used for. Visitors flip between them with the icon
-button in the corner; the choice is saved to `localStorage`, and a first-time
-visitor gets whichever their operating system is set to. A small script in
-`index.html` settles the mode before the first paint, so a dark-mode visitor
-never sees a flash of the light page.
+The `PALETTE` const at the top of `Portfolio.vue` holds a light set and a dark
+set; the comment above it says what each color slot does. Visitors flip between
+them with the icon button in the corner; the choice is saved to `localStorage`,
+and a first-time visitor gets whichever their operating system is set to. A small
+script in `index.html` settles the mode before the first paint, so a dark-mode
+visitor never sees a flash of the light page.
 
 The button is [`src/components/ThemeToggle.vue`](src/components/ThemeToggle.vue)
 and the shared state lives in
@@ -35,28 +39,24 @@ and the shared state lives in
 
 ## Images
 
-Project covers and the avatar are imported from `src/assets/` at the top of
-`portfolio.js`. Drop a new image in `src/assets/projects/`, import it, and point a
-project's `image_url` at it.
+Project covers and the avatar are imported at the top of `Portfolio.vue`. Drop a
+new image in `src/assets/projects/`, import it, and reference it in the markup.
 
 ## Project galleries
 
-Each project has a `gallery` array (Finance Hub has 8 screenshots, Talos 5).
-Clicking a project's cover opens a lightbox on that array — arrow keys, swipe,
-thumbnail strip, Esc to close.
+Clicking a project's cover opens a lightbox — arrow keys, swipe, thumbnail strip,
+Esc to close. The multi-shot galleries are the two arrays near the top of
+`Portfolio.vue`; `openGallery(images, title)` takes it from there.
 
-The lightbox itself is [`src/components/ProjectGallery.vue`](src/components/ProjectGallery.vue)
-and it reads the same palette, so it restyles itself with the rest of the site.
-Its scrim stays dark in both modes on purpose, so the screenshots are always the
+The lightbox itself is
+[`src/components/ProjectGallery.vue`](src/components/ProjectGallery.vue). Its
+scrim stays dark in both modes on purpose, so the screenshots are always the
 brightest thing on screen.
 
 ## Contact form
 
-The form posts to `profile.formspree_url` in
-[`src/data/portfolio.js`](src/data/portfolio.js); clear that value and the
-section falls back to showing contact details without a form.
-
-The submit logic lives in
+The form posts to the Formspree endpoint passed to `useContactForm` in
+`Portfolio.vue`. The submit logic lives in
 [`src/lib/useContactForm.js`](src/lib/useContactForm.js) — sending / sent / error
 states, Formspree validation messages, and a `_gotcha` honeypot.
 

@@ -1,7 +1,7 @@
 <script setup>
-import Home from './views/Home.vue'
+import Portfolio from './views/Portfolio.vue'
 </script>
 
 <template>
-  <Home />
+  <Portfolio />
 </template>
