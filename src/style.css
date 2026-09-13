@@ -7,11 +7,13 @@
 :root {
   --ink: #1c1c1a;
   --bg: #fafaf8;
+  --band: #f2eee4;
 }
 
 :root[data-mode='dark'] {
   --ink: #f3f0e7;
   --bg: #14130f;
+  --band: #0e0d0a;
 }
 
 body {

@@ -21,8 +21,13 @@ carries the short narrative version.
 
 ## The page
 
-One column: a centered hero, then skills, projects, about and a contact form.
-Cream page, serif headline, rounded cards.
+One column, divided into full-bleed color bands so the sections read as blocks
+rather than one continuous sheet: hero, skills, work, about, contact. Cream page,
+serif headline, rounded cards.
+
+Projects come in two tiers. The two under **Selected work** get a full card with
+a cover image and a description; the rest sit under **Also built** as one ruled
+line each. Moving a project between tiers means moving its markup.
 
 ## Light and dark mode
 
